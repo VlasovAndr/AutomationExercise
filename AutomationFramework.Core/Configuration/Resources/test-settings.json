@@ -1,0 +1,28 @@
+{
+  "framework": {
+    "Enviroment": "qa", 
+    "DownloadedLocation": "", 
+    "LogLevel": "INFORMATION" 
+  },
+
+  "driver": {
+    "BrowserName": "chrome", 
+    "BrowserType": "local", 
+    "GridHubUrl": " http://localhost:4444/wd/hub", 
+    "WaitSeconds": 10,
+    "Headless": false
+  },
+
+  "enviroment": {
+    "qa": {
+      "Url": "https://automationexercise.com/",
+      "UserName": "",
+      "Password": ""
+    },
+    "qa02": {
+      "Url": "https://automationexerciseQA02.com/",
+      "UserName": "",
+      "Password": ""
+    }
+  }
+}
