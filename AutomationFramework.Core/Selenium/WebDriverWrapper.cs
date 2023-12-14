@@ -197,6 +197,24 @@ public class WebDriverWrapper : IWebDriverWrapper
         doubleClick.ContextClick(FindElement(xPath)).Perform();
     }
 
+    public void SelectFromDropDownByValue(string xPath, string value)
+    {
+        var dropDown = new SelectElement(FindElement(xPath));
+        dropDown.SelectByValue(value);
+    }
+
+    public void SelectFromDropDownByText(string xPath, string text)
+    {
+        var dropDown = new SelectElement(FindElement(xPath));
+        dropDown.SelectByText(text);
+    }
+
+    public void SelectFromDropDownByIndex(string xPath, int index)
+    {
+        var dropDown = new SelectElement(FindElement(xPath));
+        dropDown.SelectByIndex(index);
+    }
+
     public void WaitSomeSeconds(int timeInSeconds)
     {
         Thread.Sleep(timeInSeconds * 1000);
