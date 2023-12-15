@@ -13,5 +13,5 @@ public class DefaultVariables
         => Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
 
     public string Config
-        => Path.Combine(Solution, "Automation.Framework.Core", "Configuration", "Resources", "test-settings.json");
+        => Path.Combine(Solution, "AutomationFramework.Core", "Configuration", "Resources", "test-settings.json");
 }
