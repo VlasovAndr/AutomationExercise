@@ -5,6 +5,8 @@ using AutomationFramework.Core.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using AutomationFramework.Core.Selenium.WebDriverFactory;
 using AutomationFramework.Core.Selenium;
+using AutomationFramework.Core.Pages;
+using AutomationFramework.Core.Pages.Locators;
 
 namespace AutomationFramework.Core.Dependencies;
 
@@ -25,6 +27,15 @@ public class DIContainer
             serviceCollection.AddSingleton<INamedBrowserFactory, RemoteChromeDriverFactory>();
             serviceCollection.AddSingleton<INamedBrowserFactory, RemoteFirefoxDriverFactory>();
             serviceCollection.AddSingleton<IWebDriverWrapper, WebDriverWrapper>();
+
+            serviceCollection.AddSingleton<HomePage>();
+            serviceCollection.AddSingleton<SignupAndLoginPage>();
+            serviceCollection.AddSingleton<SignupPage>();
+            serviceCollection.AddSingleton<Header>();
+
+            serviceCollection.AddSingleton<HeaderLocators>();
+            serviceCollection.AddSingleton<SignupAndLoginLocators>();
+            serviceCollection.AddSingleton<SignupLocators>();
 
         }
 
