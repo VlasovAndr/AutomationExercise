@@ -2,6 +2,7 @@
 using AutomationFramework.Core.Configuration;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System.Drawing;
 
 namespace AutomationFramework.Core.Selenium.WebDriverFactory;
 
@@ -34,6 +35,9 @@ public class ChromeDriverFactory : INamedBrowserFactory
         options.AddArgument("disable-popup-blocking");
         options.AddUserProfilePreference("download.default_directory", testRunConfiguration.Framework.DownloadedLocation);
         options.AddUserProfilePreference("profile.cookie_controls_mode", 0);
+        options.AddArgument("disable-notifications");
+        options.AddUserProfilePreference("autofill.profile_enabled", false);
+        options.PageLoadStrategy = PageLoadStrategy.Eager;
         if (testRunConfiguration.Driver.Headless) options.AddArgument("--headless=new");
 
         var webDriver = new ChromeDriver(options);
@@ -41,7 +45,8 @@ public class ChromeDriverFactory : INamedBrowserFactory
         //webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
         //webDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
         //webDriver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(10);
-        webDriver.Manage().Window.Maximize();
+        //webDriver.Manage().Window.Maximize();
+        webDriver.Manage().Window.Size = new Size(1920, 1080);
 
         return webDriver;
     }

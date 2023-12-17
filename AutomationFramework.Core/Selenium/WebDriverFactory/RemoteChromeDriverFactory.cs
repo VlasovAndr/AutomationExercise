@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using AutomationFramework.Core.Configuration;
+using System.Drawing;
 
 namespace AutomationFramework.Core.Selenium.WebDriverFactory;
 
@@ -33,6 +34,9 @@ public class RemoteChromeDriverFactory : INamedBrowserFactory
         options.AddArgument("disable-popup-blocking");
         options.AddUserProfilePreference("download.default_directory", testRunConfiguration.Framework.DownloadedLocation);
         options.AddUserProfilePreference("profile.cookie_controls_mode", 0);
+        options.AddArgument("disable-notifications");
+        options.AddUserProfilePreference("autofill.profile_enabled", false);
+        
         if (testRunConfiguration.Driver.Headless) options.AddArgument("--headless=new");
 
         options.AddAdditionalOption("selenoid:options", new Dictionary<string, object>
@@ -43,7 +47,8 @@ public class RemoteChromeDriverFactory : INamedBrowserFactory
         });
 
         var webDriver = new RemoteWebDriver(new Uri($"{testRunConfiguration.Driver.GridHubUrl}"), options.ToCapabilities());
-        webDriver.Manage().Window.Maximize();
+        //webDriver.Manage().Window.Maximize();
+        webDriver.Manage().Window.Size = new Size(1920, 1080);
 
         return webDriver;
     }
