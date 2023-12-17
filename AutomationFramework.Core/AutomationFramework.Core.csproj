@@ -17,4 +17,10 @@
     <ProjectReference Include="..\AutomationFramework.Common\AutomationFramework.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Configuration\Resources\test-settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

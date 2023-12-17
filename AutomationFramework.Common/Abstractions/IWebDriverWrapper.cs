@@ -43,4 +43,10 @@ public interface IWebDriverWrapper
     void CloseCurrentTab();
 
     void TakeScreenshot(string path);
+    
+    void SelectFromDropDownByText(string xPath, string text);
+
+    void SelectFromDropDownByValue(string xPath, string value);
+
+    void SelectFromDropDownByIndex(string xPath, int index);
 }

@@ -86,8 +86,15 @@ public class WebDriverWrapper : IWebDriverWrapper
 
     public IWebElement FindElement(string xPath, int timeout = 10)
     {
-        CheckClickabilityOfElement(xPath, timeout);
-        return WebDriver.FindElement(By.XPath(xPath));
+        var element = GetElementFromDOM(xPath);
+        if (element != null)
+        {
+            ExecuteAsyncJSScriptForElement("arguments[0].scrollIntoView();", element);
+            CheckClickabilityOfElement(xPath, timeout);
+            return element;
+        }
+
+        throw new Exception($"Element with xPath '{xPath}' was not found.");
     }
 
     public IWebElement FindElement(string xPath, string frameName, int timeout = 10)
@@ -115,7 +122,6 @@ public class WebDriverWrapper : IWebDriverWrapper
 
     private void CheckClickabilityOfElement(string xPath, int timeout)
     {
-        WaitForLoadingPage();
         var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(timeout));
 
         try
@@ -142,7 +148,6 @@ public class WebDriverWrapper : IWebDriverWrapper
 
         try
         {
-            WaitForLoadingPage();
             var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(timeout));
             var element = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath(xPath)));
             isPresented = true;
@@ -197,6 +202,24 @@ public class WebDriverWrapper : IWebDriverWrapper
         doubleClick.ContextClick(FindElement(xPath)).Perform();
     }
 
+    public void SelectFromDropDownByValue(string xPath, string value)
+    {
+        var dropDown = new SelectElement(FindElement(xPath));
+        dropDown.SelectByValue(value);
+    }
+
+    public void SelectFromDropDownByText(string xPath, string text)
+    {
+        var dropDown = new SelectElement(FindElement(xPath));
+        dropDown.SelectByText(text);
+    }
+
+    public void SelectFromDropDownByIndex(string xPath, int index)
+    {
+        var dropDown = new SelectElement(FindElement(xPath));
+        dropDown.SelectByIndex(index);
+    }
+
     public void WaitSomeSeconds(int timeInSeconds)
     {
         Thread.Sleep(timeInSeconds * 1000);
@@ -209,11 +232,6 @@ public class WebDriverWrapper : IWebDriverWrapper
         screenshot.SaveAsFile(path, ScreenshotImageFormat.Png);
     }
 
-    public void WaitForLoadingPage()
-    {
-        WebDriverWait wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(20));
-        wait.Until(driver => ((IJavaScriptExecutor)WebDriver).ExecuteScript("return document.readyState").Equals("complete"));
-    }
 
     public object ExecuteAsyncJSScriptForElement(string script, IWebElement element)
     {
