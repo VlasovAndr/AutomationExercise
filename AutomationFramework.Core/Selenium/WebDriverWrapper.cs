@@ -86,8 +86,15 @@ public class WebDriverWrapper : IWebDriverWrapper
 
     public IWebElement FindElement(string xPath, int timeout = 10)
     {
-        CheckClickabilityOfElement(xPath, timeout);
-        return WebDriver.FindElement(By.XPath(xPath));
+        var element = GetElementFromDOM(xPath);
+        if (element != null)
+        {
+            ExecuteAsyncJSScriptForElement("arguments[0].scrollIntoView();", element);
+            CheckClickabilityOfElement(xPath, timeout);
+            return element;
+        }
+
+        throw new Exception($"Element with xPath '{xPath}' was not found.");
     }
 
     public IWebElement FindElement(string xPath, string frameName, int timeout = 10)
