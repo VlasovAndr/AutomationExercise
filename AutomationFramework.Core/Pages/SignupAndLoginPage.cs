@@ -9,8 +9,10 @@ public class SignupAndLoginPage : PageBase
     private const string PAGE_NAME = "Signup / Login Page";
     private string PageUrl => $"{BaseUrl}/login";
 
-    public readonly Header header;
+    private readonly Header header;
     private readonly SignupAndLoginLocators repo;
+
+    public Header Header => header;
 
     public SignupAndLoginPage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, Header header, SignupAndLoginLocators repo)
         : base(browser, log, config)
@@ -30,11 +32,6 @@ public class SignupAndLoginPage : PageBase
         return browser.FindElement(repo.SignupFormTitle).Text;
     }
 
-    public string GetLoginFormTitle()
-    {
-        return browser.FindElement(repo.LoginFormTitle).Text;
-    }
-
     public void FillSignupForm(string name, string email)
     {
         browser.EnterText(repo.SignupNameField, name);
@@ -44,6 +41,11 @@ public class SignupAndLoginPage : PageBase
     public void ClickOnSignUpBtn()
     {
         browser.FindElement(repo.SignupBtn).Click();
+    }
+
+    public string GetLoginFormTitle()
+    {
+        return browser.FindElement(repo.LoginFormTitle).Text;
     }
 
     public void FillLoginForm(string email, string password)
