@@ -122,7 +122,6 @@ public class WebDriverWrapper : IWebDriverWrapper
 
     private void CheckClickabilityOfElement(string xPath, int timeout)
     {
-        WaitForLoadingPage();
         var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(timeout));
 
         try
@@ -149,7 +148,6 @@ public class WebDriverWrapper : IWebDriverWrapper
 
         try
         {
-            WaitForLoadingPage();
             var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(timeout));
             var element = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath(xPath)));
             isPresented = true;
@@ -234,11 +232,6 @@ public class WebDriverWrapper : IWebDriverWrapper
         screenshot.SaveAsFile(path, ScreenshotImageFormat.Png);
     }
 
-    public void WaitForLoadingPage()
-    {
-        WebDriverWait wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(20));
-        wait.Until(driver => ((IJavaScriptExecutor)WebDriver).ExecuteScript("return document.readyState").Equals("complete"));
-    }
 
     public object ExecuteAsyncJSScriptForElement(string script, IWebElement element)
     {
