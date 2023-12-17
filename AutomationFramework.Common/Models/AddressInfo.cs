@@ -10,11 +10,11 @@ public class AddressInfo
     public string Country { get; }
     public string State { get; }
     public string City { get; }
-    public int Zipcode { get; }
-    public int MobileNumber { get; }
+    public string Zipcode { get; }
+    public string MobileNumber { get; }
 
     public AddressInfo(string firstName, string lastName, string company, string address,
-        string address2, string country, string state, string city, int zipcode, int mobileNumber)
+        string address2, string country, string state, string city, string zipcode, string mobileNumber)
     {
         FirstName = firstName;
         LastName = lastName;
