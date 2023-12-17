@@ -14,16 +14,18 @@ public class Header : PageBase
         this.repo = repo;
     }
 
-    public bool IsVisible() => browser.IsElementVisibleOnPage(repo.HeaderElement);
-    public bool IsHeaderWithTextVivible(string headerText) => browser.IsElementVisibleOnPage(repo.HeaderMenyByName(headerText));
+    public bool IsHeaderBlockVisible() => browser.IsElementVisibleOnPage(repo.HeaderElement);
 
-    public void ClickOnHomeMenu() => browser.FindElement(repo.HeaderMenyByName("Home")).Click();
-    public void ClickOnProductsMenu() => browser.FindElement(repo.HeaderMenyByName("Products")).Click();
-    public void ClickOnCartMenu() => browser.FindElement(repo.HeaderMenyByName("Cart")).Click();
-    public void ClickOnSignupLoginMenu() => browser.FindElement(repo.HeaderMenyByName("Signup / Login")).Click();
-    public void ClickOnTestCasesMenu() => browser.FindElement(repo.HeaderMenyByName("Test Cases")).Click();
-    public void ClickOnAPITestingMenu() => browser.FindElement(repo.HeaderMenyByName("API Testing")).Click();
-    public void ClickOnVideoTutorialsMenu() => browser.FindElement(repo.HeaderMenyByName("Video Tutorials")).Click();
-    public void ClickOnContactUsMenu() => browser.FindElement(repo.HeaderMenyByName("Contact us")).Click();
+    public void GoToHomeMenu() => browser.FindElement(repo.HeaderMenyByName("Home")).Click();
+    public void GoToProductsMenu() => browser.FindElement(repo.HeaderMenyByName("Products")).Click();
+    public void GoToCartMenu() => browser.FindElement(repo.HeaderMenyByName("Cart")).Click();
+    public void GoToSignupLoginMenu() => browser.FindElement(repo.HeaderMenyByName("Signup / Login")).Click();
+    public void GoToTestCasesMenu() => browser.FindElement(repo.HeaderMenyByName("Test Cases")).Click();
+    public void GoToAPITestingMenu() => browser.FindElement(repo.HeaderMenyByName("API Testing")).Click();
+    public void GoToVideoTutorialsMenu() => browser.FindElement(repo.HeaderMenyByName("Video Tutorials")).Click();
+    public void GoToContactUsMenu() => browser.FindElement(repo.HeaderMenyByName("Contact us")).Click();
     public void ClickOnDeleteAccountMenu() => browser.FindElement(repo.HeaderMenyByName("Delete Account")).Click();
+
+    public List<string> GetAllHeadersText() => browser.FindElements(repo.HeaderMenyByName(""))
+        .Select(x => x.GetAttribute("innerText")).ToList();
 }
