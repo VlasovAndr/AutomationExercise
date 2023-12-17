@@ -6,7 +6,9 @@ namespace AutomationFramework.Core.Pages;
 public class HomePage : PageBase
 {
     private const string PAGE_NAME = "Home Page";
-    public readonly Header header;
+    private readonly Header header;
+
+    public Header Header => header;
 
     public HomePage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, Header header)
         : base(browser, log, config)
@@ -22,6 +24,6 @@ public class HomePage : PageBase
 
     public bool IsPageOpen()
     {
-        return header.IsVisible() && GetTitle().Equals("Automation Exercise");
+        return header.IsHeaderBlockVisible() && GetTitle().Equals("Automation Exercise");
     }
 }
