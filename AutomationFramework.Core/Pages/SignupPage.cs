@@ -7,11 +7,13 @@ namespace AutomationFramework.Core.Pages;
 
 public class SignupPage : PageBase
 {
-    private const string PAGE_NAME = "Login Page";
+    private const string PAGE_NAME = "Signup Page";
     private string PageUrl => $"{BaseUrl}/signup";
 
-    public readonly Header header;
+    private readonly Header header;
     private readonly SignupLocators repo;
+
+    public Header Header => header;
 
     public SignupPage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, Header header, SignupLocators repo)
         : base(browser, log, config)
@@ -26,12 +28,12 @@ public class SignupPage : PageBase
         log.Information($"|{PAGE_NAME}| {PAGE_NAME} is opened");
     }
 
-    public string GetLoginFormTitle()
+    public string GetSignupFormTitle()
     {
-        return browser.FindElement(repo.LoginFormTitle).Text;
+        return browser.FindElement(repo.SignupFormTitle).Text;
     }
 
-    public void FillLoginForm(User user)
+    public void FillSignupForm(User user)
     {
         FillAccountInfoForm(user.Account);
         FillAddressInfoForm(user.Address);
@@ -40,9 +42,8 @@ public class SignupPage : PageBase
     public void FillAccountInfoForm(AccountInfo accountInfo)
     {
         browser.FindElement(repo.GenderRadioBtn(accountInfo.Gender)).Click();
-        browser.EnterText(repo.LoginNameField, accountInfo.Name);
-        browser.EnterText(repo.LoginEmailField, accountInfo.Email);
-        browser.EnterText(repo.LoginPasswordField, accountInfo.Password);
+        browser.EnterText(repo.SignupNameField, accountInfo.Name);
+        browser.EnterText(repo.SignupPasswordField, accountInfo.Password);
         browser.SelectFromDropDownByValue(repo.DayOfBirthDropDown, accountInfo.DateOfBirth.Day.ToString());
         browser.SelectFromDropDownByValue(repo.MonthOfBirthDropDown, accountInfo.DateOfBirth.Month.ToString());
         browser.SelectFromDropDownByValue(repo.YearOfBirthDropDown, accountInfo.DateOfBirth.Year.ToString());
@@ -81,6 +82,11 @@ public class SignupPage : PageBase
         browser.FindElement(repo.CreateAccountBtn).Click();
     }
 
+    public void ClickOnContinueBtn()
+    {
+        browser.FindElement(repo.ContinueBtn).Click();
+    }
+
     public string GetAccountCreatedMessage()
     {
         return browser.FindElement(repo.CreateAccountMessage).Text;
@@ -89,10 +95,5 @@ public class SignupPage : PageBase
     public string GetAccountDeletedMessage()
     {
         return browser.FindElement(repo.DeleteAccountMessage).Text;
-    }
-
-    public string ClickOnContinueBtn()
-    {
-        return browser.FindElement(repo.ContinueBtn).Text;
     }
 }
