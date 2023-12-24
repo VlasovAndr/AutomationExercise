@@ -35,18 +35,6 @@ public class TestBase
         else if (outcome == TestStatus.Failed)
         {
             log.Error($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
-            log.Information($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
-            log.Debug($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
-            log.Warning($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
-
-            log.SetLogLevel("fatal");
-            log.Error($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
-            log.Information($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
-            log.Debug($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
-            log.Warning($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
-
-
-            log.Error($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
 
             //Screenshot screenshot = (webDriver.WebDriver as ITakesScreenshot).GetScreenshot();
             //screenshot.SaveAsFile("screenshot.png", ScreenshotImageFormat.Png);

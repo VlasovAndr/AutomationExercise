@@ -7,12 +7,13 @@ using AutomationFramework.Core.Selenium.WebDriverFactory;
 using AutomationFramework.Core.Selenium;
 using AutomationFramework.Core.Pages;
 using AutomationFramework.Core.Pages.Locators;
+using AutomationFramework.Core.Steps;
 
 namespace AutomationFramework.Core.Dependencies;
 
 public class DIContainer
 {
-    public static IServiceCollection serviceCollection;
+    private static IServiceCollection serviceCollection;
 
     public static IServiceProvider ConfigureServices()
     {
@@ -37,6 +38,7 @@ public class DIContainer
             serviceCollection.AddSingleton<SignupAndLoginLocators>();
             serviceCollection.AddSingleton<SignupLocators>();
 
+            serviceCollection.AddKeyedSingleton<IUserSteps, UserUISteps>("UI");
         }
 
         return serviceCollection.BuildServiceProvider();
