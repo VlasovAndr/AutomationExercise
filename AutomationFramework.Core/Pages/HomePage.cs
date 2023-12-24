@@ -22,8 +22,11 @@ public class HomePage : PageBase
         log.Information($"|{PAGE_NAME}| {PAGE_NAME} is opened");
     }
 
-    public bool IsPageOpen()
+    public bool IsPageOpened()
     {
-        return header.IsHeaderBlockVisible() && GetTitle().Equals("Automation Exercise");
+        bool isPageOpened = header.IsHeaderBlockVisible() && GetTitle().Equals("Automation Exercise");
+        log.Information($"|{PAGE_NAME}| {PAGE_NAME} {(isPageOpened ? "is opened" : "is not opened")}");
+
+        return isPageOpened;
     }
 }

@@ -30,13 +30,17 @@ public class SignupPage : PageBase
 
     public string GetSignupFormTitle()
     {
-        return browser.FindElement(repo.SignupFormTitle).Text;
+        string formTitle = browser.FindElement(repo.SignupFormTitle).Text;
+        log.Information($"|{PAGE_NAME}| Signup form title: '{formTitle}'");
+        
+        return formTitle;
     }
 
-    public void FillSignupForm(User user)
+    public void FillSignupForm(AccountInfo accountInfo, AddressInfo addressInfo)
     {
-        FillAccountInfoForm(user.Account);
-        FillAddressInfoForm(user.Address);
+        FillAccountInfoForm(accountInfo);
+        FillAddressInfoForm(addressInfo);
+        log.Information($"|{PAGE_NAME}| Signup form filled");
     }
 
     public void FillAccountInfoForm(AccountInfo accountInfo)
@@ -59,6 +63,8 @@ public class SignupPage : PageBase
         {
             specOfferCheckBox.Click();
         }
+
+        log.Information($"|{PAGE_NAME}| Account information form filled");
     }
 
     public void FillAddressInfoForm(AddressInfo addressInfo)
@@ -75,25 +81,36 @@ public class SignupPage : PageBase
         browser.EnterText(repo.CityField, addressInfo.City);
         browser.EnterText(repo.ZipcodeField, addressInfo.Zipcode.ToString());
         browser.EnterText(repo.MobileNumberField, addressInfo.MobileNumber.ToString());
+        log.Information($"|{PAGE_NAME}| Address information form filled");
     }
 
     public void ClickOnCreateAccountBtn()
     {
         browser.FindElement(repo.CreateAccountBtn).Click();
+        log.Information($"|{PAGE_NAME}| Clicked on 'Create Account' button");
+
     }
 
     public void ClickOnContinueBtn()
     {
         browser.FindElement(repo.ContinueBtn).Click();
+        log.Information($"|{PAGE_NAME}| Clicked on 'Continue' button");
+
     }
 
     public string GetAccountCreatedMessage()
     {
-        return browser.FindElement(repo.CreateAccountMessage).Text;
+        string createAccountMessage = browser.FindElement(repo.CreateAccountMessage).Text;
+        log.Information($"|{PAGE_NAME}| Account created message: '{createAccountMessage}'");
+        
+        return createAccountMessage;
     }
 
     public string GetAccountDeletedMessage()
     {
-        return browser.FindElement(repo.DeleteAccountMessage).Text;
+        string deleteAccountMessage = browser.FindElement(repo.DeleteAccountMessage).Text;
+        log.Information($"|{PAGE_NAME}| Account deleted message: '{deleteAccountMessage}'");
+        
+        return deleteAccountMessage;
     }
 }

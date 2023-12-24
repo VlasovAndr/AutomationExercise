@@ -29,34 +29,43 @@ public class SignupAndLoginPage : PageBase
 
     public string GetSignupFormTitle()
     {
-        return browser.FindElement(repo.SignupFormTitle).Text;
+        string formTitle = browser.FindElement(repo.SignupFormTitle).Text;
+        log.Information($"|{PAGE_NAME}| Signup form title: '{formTitle}'");
+        
+        return formTitle;
     }
 
     public void FillSignupForm(string name, string email)
     {
         browser.EnterText(repo.SignupNameField, name);
         browser.EnterText(repo.SignupEmailField, email);
+        log.Information($"|{PAGE_NAME}| Signup form filled");
     }
 
     public void ClickOnSignUpBtn()
     {
         browser.FindElement(repo.SignupBtn).Click();
+        log.Information($"|{PAGE_NAME}| Clicked on 'SignUp' button");
     }
 
     public string GetLoginFormTitle()
     {
-        return browser.FindElement(repo.LoginFormTitle).Text;
+        string formTitle = browser.FindElement(repo.LoginFormTitle).Text;
+        log.Information($"|{PAGE_NAME}| Login form title: '{formTitle}'");
+        
+        return formTitle;
     }
 
     public void FillLoginForm(string email, string password)
     {
         browser.EnterText(repo.LoginEmailField, email);
         browser.EnterText(repo.LoginPasswordField, password);
+        log.Information($"|{PAGE_NAME}| Login form filled");
     }
 
     public void ClickOnLoginBtn()
     {
         browser.FindElement(repo.LoginBtn).Click();
+        log.Information($"|{PAGE_NAME}| Clicked on 'Login' button");
     }
-
 }
