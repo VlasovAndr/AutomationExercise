@@ -4,6 +4,9 @@ using NUnit.Framework;
 using NUnit.Framework.Internal;
 using FluentAssertions;
 using AutomationFrameworkCommon.Services;
+using AutomationFramework.Common.Models;
+using AutomationFramework.Common.Abstractions;
+using AutomationFramework.Core.Steps;
 
 [assembly: LevelOfParallelism(3)]
 
@@ -18,22 +21,23 @@ public class ElementsMenuTests : TestBase
     private readonly HomePage homePage;
     private readonly SignupAndLoginPage signupAndLoginPage;
     private readonly SignupPage signupPage;
+    private readonly IUserSteps userSteps;
 
     public ElementsMenuTests()
     {
         homePage = container.GetRequiredService<HomePage>();
         signupAndLoginPage = container.GetRequiredService<SignupAndLoginPage>();
         signupPage = container.GetRequiredService<SignupPage>();
+        userSteps = container.GetRequiredKeyedService<IUserSteps>("UI");
     }
 
-    [Test, Property("TMSId", "Test Case 1")]
-    [Category("Register User")]
+    [Test, Property("TMSId", "Test Case 1"), Description("Register User")]
     public void RegisterUser()
     {
         var user = new DataGeneratorService().GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
 
         homePage.Open();
-        homePage.IsPageOpen().Should().BeTrue();
+        homePage.IsPageOpened().Should().BeTrue();
         homePage.Header.GoToSignupLoginMenu();
 
         signupAndLoginPage.GetSignupFormTitle().Should().Be("New User Signup!");
@@ -54,5 +58,27 @@ public class ElementsMenuTests : TestBase
         homePage.Header.ClickOnDeleteAccountMenu();
         signupPage.GetAccountDeletedMessage().Should().Be("ACCOUNT DELETED!");
         signupPage.ClickOnContinueBtn();
+    }
+
+    [Test, Property("TMSId", "Test Case 2"), Description("Login User with correct email and password")]
+    public void LoginUserCorrectEmailAndPassword()
+    {
+        var user = new DataGeneratorService().GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
+        userSteps.RegisterUser(user);
+
+        homePage.Open();
+        homePage.IsPageOpened().Should().BeTrue();
+        homePage.Header.GoToSignupLoginMenu();
+
+        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
+        signupAndLoginPage.FillLoginForm(user.Account.Email, user.Account.Password);
+        signupAndLoginPage.ClickOnLoginBtn();
+
+        homePage.Header.GetAllHeadersText()
+            .Any(x => x.Contains($"Logged in as {user.Account.Name}"))
+            .Should().BeTrue();
+
+        homePage.Header.ClickOnDeleteAccountMenu();
+        signupPage.GetAccountDeletedMessage().Should().Be("ACCOUNT DELETED!");
     }
 }
