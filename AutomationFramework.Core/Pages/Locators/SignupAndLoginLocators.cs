@@ -13,4 +13,5 @@ public class SignupAndLoginLocators
     public string LoginEmailField => $"{LoginForm}//input[@data-qa = 'login-email']";
     public string LoginPasswordField => $"{LoginForm}//input[@data-qa = 'login-password']";
     public string LoginBtn => $".//button[@data-qa = 'login-button']";
+    public string LoginFormErrorMessage => $"{LoginForm}//p";
 }

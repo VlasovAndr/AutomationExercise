@@ -7,15 +7,15 @@ namespace AutomationFramework.Core.Steps;
 
 public class UserUISteps : IUserSteps
 {
-    public IServiceProvider container;
+    private IServiceProvider container;
     private readonly SignupAndLoginPage signupAndLoginPage;
     private readonly SignupPage signupPage;
 
     public UserUISteps(IServiceProvider container)
     {
         this.container = container;
-        signupAndLoginPage = container.GetRequiredService<SignupAndLoginPage>();
-        signupPage = container.GetRequiredService<SignupPage>();
+        signupAndLoginPage = this.container.GetRequiredService<SignupAndLoginPage>();
+        signupPage = this.container.GetRequiredService<SignupPage>();
     }
 
     public void RegisterUser(User user)

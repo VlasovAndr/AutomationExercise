@@ -81,4 +81,19 @@ public class ElementsMenuTests : TestBase
         homePage.Header.ClickOnDeleteAccountMenu();
         signupPage.GetAccountDeletedMessage().Should().Be("ACCOUNT DELETED!");
     }
+
+    [Test, Property("TMSId", "Test Case 3"), Description("Login User with incorrect email and password")]
+    public void LoginUserIncorrectEmailAndPassword()
+    {
+        homePage.Open();
+        homePage.IsPageOpened().Should().BeTrue();
+        homePage.Header.GoToSignupLoginMenu();
+
+        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
+        signupAndLoginPage.FillLoginForm("EmailNotExist@mail.com", "Password");
+        signupAndLoginPage.ClickOnLoginBtn();
+
+        signupAndLoginPage.GetLoginFormErrorMessage()
+            .Should().Be("Your email or password is incorrect!");
+    }
 }

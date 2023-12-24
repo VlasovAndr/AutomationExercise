@@ -31,7 +31,7 @@ public class SignupAndLoginPage : PageBase
     {
         string formTitle = browser.FindElement(repo.SignupFormTitle).Text;
         log.Information($"|{PAGE_NAME}| Signup form title: '{formTitle}'");
-        
+
         return formTitle;
     }
 
@@ -52,7 +52,7 @@ public class SignupAndLoginPage : PageBase
     {
         string formTitle = browser.FindElement(repo.LoginFormTitle).Text;
         log.Information($"|{PAGE_NAME}| Login form title: '{formTitle}'");
-        
+
         return formTitle;
     }
 
@@ -67,5 +67,13 @@ public class SignupAndLoginPage : PageBase
     {
         browser.FindElement(repo.LoginBtn).Click();
         log.Information($"|{PAGE_NAME}| Clicked on 'Login' button");
+    }
+
+    public string GetLoginFormErrorMessage()
+    {
+        var message = browser.FindElement(repo.LoginFormErrorMessage).Text;
+        log.Information($"|{PAGE_NAME}| Login form error message: {message}");
+
+        return message;
     }
 }
