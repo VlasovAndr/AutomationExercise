@@ -88,14 +88,12 @@ public class SignupPage : PageBase
     {
         browser.FindElement(repo.CreateAccountBtn).Click();
         log.Information($"|{PAGE_NAME}| Clicked on 'Create Account' button");
-
     }
 
     public void ClickOnContinueBtn()
     {
         browser.FindElement(repo.ContinueBtn).Click();
         log.Information($"|{PAGE_NAME}| Clicked on 'Continue' button");
-
     }
 
     public string GetAccountCreatedMessage()
