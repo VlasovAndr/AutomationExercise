@@ -30,4 +30,12 @@ public class UserUISteps : IUserSteps
         signupPage.ClickOnContinueBtn();
         signupPage.Close();
     }
+
+    public void DeleteUser(string email, string password)
+    {
+        signupAndLoginPage.Open();
+        signupAndLoginPage.FillLoginForm(email, password);
+        signupAndLoginPage.ClickOnLoginBtn();
+        signupAndLoginPage.Close();
+    }
 }
