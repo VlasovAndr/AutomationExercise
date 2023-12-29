@@ -1,5 +1,5 @@
 ﻿using AutomationFramework.Common.Abstractions;
-using AutomationFramework.Core.Configuration;
+using AutomationFramework.Common.Services;
 using AutomationFramework.Core.Dependencies;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -11,21 +11,18 @@ public class TestBase
 {
     public IServiceProvider container;
     public ILogging log;
+    private readonly CleanupTestService cleanupService;
 
     public TestBase()
     {
         container = DIContainer.ConfigureServices();
         log = container.GetRequiredService<ILogging>();
-        var config = container.GetRequiredService<TestRunConfiguration>();
-        log.SetLogLevel(config.Framework.LogLevel);
+        cleanupService = container.GetRequiredService<CleanupTestService>();
     }
 
     [TearDown]
     public void AfterEach()
     {
-        log.Debug("Starting AfterEach teardown");
-
-        var webDriver = container.GetRequiredService<IWebDriverWrapper>();
         var outcome = TestContext.CurrentContext.Result.Outcome.Status;
 
         if (outcome == TestStatus.Passed)
@@ -45,6 +42,12 @@ public class TestBase
             log.Warning("Outcome: " + outcome);
         }
 
+        log.Information("--------------------------------------");
+        log.Information("Starting tearsown");
+        log.Information("--------------------------------------");
+
+        var webDriver = container.GetRequiredService<IWebDriverWrapper>();
+
         try
         {
             if (webDriver.IsWebDriverCreated)
@@ -54,5 +57,15 @@ public class TestBase
         {
             log.Error($"Failed on closing web driver on after test run event. {ex.Message}");
         }
+
+        Cleanup();
+    }
+
+    private void Cleanup()
+    {
+        log.Information("--------------------------------------");
+        log.Information("Starting Cleanup");
+        log.Information("--------------------------------------");
+        cleanupService.Cleanup();
     }
 }
