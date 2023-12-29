@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 
-namespace AutomationExercise.Tests;
+namespace AutomationExerciseUI.Tests;
 
 public class TestBase
 {

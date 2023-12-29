@@ -8,7 +8,7 @@ using AutomationFramework.Common.Abstractions;
 
 [assembly: LevelOfParallelism(3)]
 
-namespace AutomationExercise.Tests;
+namespace AutomationExerciseUI.Tests;
 
 [TestFixture]
 [Parallelizable(ParallelScope.All)]
