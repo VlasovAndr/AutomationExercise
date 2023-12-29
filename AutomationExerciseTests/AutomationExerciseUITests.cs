@@ -4,9 +4,7 @@ using NUnit.Framework;
 using NUnit.Framework.Internal;
 using FluentAssertions;
 using AutomationFrameworkCommon.Services;
-using AutomationFramework.Common.Models;
 using AutomationFramework.Common.Abstractions;
-using AutomationFramework.Core.Steps;
 
 [assembly: LevelOfParallelism(3)]
 
@@ -15,20 +13,19 @@ namespace AutomationExercise.Tests;
 [TestFixture]
 [Parallelizable(ParallelScope.All)]
 [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
-
-public class ElementsMenuTests : TestBase
+public class AutomationExerciseUITests : TestBase
 {
     private readonly HomePage homePage;
     private readonly SignupAndLoginPage signupAndLoginPage;
     private readonly SignupPage signupPage;
     private readonly IUserSteps userSteps;
 
-    public ElementsMenuTests()
+    public AutomationExerciseUITests()
     {
         homePage = container.GetRequiredService<HomePage>();
         signupAndLoginPage = container.GetRequiredService<SignupAndLoginPage>();
         signupPage = container.GetRequiredService<SignupPage>();
-        userSteps = container.GetRequiredKeyedService<IUserSteps>("UI");
+        userSteps = container.GetRequiredKeyedService<IUserSteps>("API");
     }
 
     [Test, Property("TMSId", "Test Case 1"), Description("Register User")]
@@ -63,7 +60,7 @@ public class ElementsMenuTests : TestBase
     [Test, Property("TMSId", "Test Case 2"), Description("Login User with correct email and password")]
     public void LoginUserCorrectEmailAndPassword()
     {
-        var user = new DataGeneratorService().GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
+        var user = new DataGeneratorService().GenerateRandomUser();
         userSteps.RegisterUser(user);
 
         homePage.Open();
