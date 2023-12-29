@@ -25,6 +25,7 @@ public class Header : PageBase
     public void GoToVideoTutorialsMenu() => browser.FindElement(repo.HeaderMenyByName("Video Tutorials")).Click();
     public void GoToContactUsMenu() => browser.FindElement(repo.HeaderMenyByName("Contact us")).Click();
     public void ClickOnDeleteAccountMenu() => browser.FindElement(repo.HeaderMenyByName("Delete Account")).Click();
+    public void ClickOnLogoutMenu() => browser.FindElement(repo.HeaderMenyByName("Logout")).Click();
 
     public List<string> GetAllHeadersText() => browser.FindElements(repo.HeaderMenyByName(""))
         .Select(x => x.GetAttribute("innerText")).ToList();

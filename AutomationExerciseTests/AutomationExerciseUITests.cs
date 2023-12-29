@@ -93,4 +93,26 @@ public class AutomationExerciseUITests : TestBase
         signupAndLoginPage.GetLoginFormErrorMessage()
             .Should().Be("Your email or password is incorrect!");
     }
+
+    [Test, Property("TMSId", "Test Case 4"), Description("Logout User")]
+    public void LogoutUser()
+    {
+        var user = new DataGeneratorService().GenerateRandomUser();
+        userSteps.RegisterUser(user);
+
+        homePage.Open();
+        homePage.IsPageOpened().Should().BeTrue();
+        homePage.Header.GoToSignupLoginMenu();
+
+        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
+        signupAndLoginPage.FillLoginForm(user.Account.Email, user.Account.Password);
+        signupAndLoginPage.ClickOnLoginBtn();
+
+        homePage.Header.GetAllHeadersText()
+            .Any(x => x.Contains($"Logged in as {user.Account.Name}"))
+            .Should().BeTrue();
+
+        homePage.Header.ClickOnLogoutMenu();
+        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
+    }
 }
