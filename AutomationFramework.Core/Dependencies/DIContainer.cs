@@ -8,6 +8,8 @@ using AutomationFramework.Core.Selenium;
 using AutomationFramework.Core.Pages;
 using AutomationFramework.Core.Pages.Locators;
 using AutomationFramework.Core.Steps;
+using AutomationFramework.Common.Services.API;
+using AutomationFramework.Common.Services;
 
 namespace AutomationFramework.Core.Dependencies;
 
@@ -21,7 +23,7 @@ public class DIContainer
         {
             serviceCollection = new ServiceCollection();
             serviceCollection.AddSingleton<DefaultVariables>();
-            serviceCollection.AddSingleton<ILogging, ConsoleLogger>(); // [ConsoleLogger/FileLogger/SpecflowLogger/]
+            serviceCollection.AddScoped<ILogging, ConsoleLogger>(); // [ConsoleLogger/FileLogger/SpecflowLogger/]
             serviceCollection.AddSingleton<TestRunConfiguration>();
             serviceCollection.AddSingleton<INamedBrowserFactory, ChromeDriverFactory>();
             serviceCollection.AddSingleton<INamedBrowserFactory, FirefoxDriverFactory>();
@@ -38,7 +40,13 @@ public class DIContainer
             serviceCollection.AddSingleton<SignupAndLoginLocators>();
             serviceCollection.AddSingleton<SignupLocators>();
 
+            serviceCollection.AddTransient<APIClient>();
+            serviceCollection.AddTransient<UserAPIService>();
+
             serviceCollection.AddKeyedSingleton<IUserSteps, UserUISteps>("UI");
+            serviceCollection.AddKeyedSingleton<IUserSteps, UserAPISteps>("API");
+
+            serviceCollection.AddSingleton<CleanupTestService>();
         }
 
         return serviceCollection.BuildServiceProvider();
