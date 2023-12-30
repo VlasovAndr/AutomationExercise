@@ -48,6 +48,13 @@ public class SignupAndLoginPage : PageBase
         log.Information($"|{PAGE_NAME}| Clicked on 'SignUp' button");
     }
 
+    public string GetSignUpErrorMessage()
+    {
+        var errorMessage = browser.FindElement(repo.SignUpErrorMessage).Text;
+        log.Information($"|{PAGE_NAME}| Error message is {errorMessage}");
+        return errorMessage;
+    }
+
     public string GetLoginFormTitle()
     {
         string formTitle = browser.FindElement(repo.LoginFormTitle).Text;

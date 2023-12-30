@@ -7,6 +7,7 @@ public class SignupAndLoginLocators
     public string SignupNameField => $"{SignupForm}//input[@data-qa = 'signup-name']";
     public string SignupEmailField => $"{SignupForm}//input[@data-qa = 'signup-email']";
     public string SignupBtn => $".//button[@data-qa = 'signup-button']";
+    public string SignUpErrorMessage => $"{SignupBtn}/../p";
 
     public string LoginForm => $".//div[@class = 'login-form']";
     public string LoginFormTitle => $"{LoginForm}/h2";

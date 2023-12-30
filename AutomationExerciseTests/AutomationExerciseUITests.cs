@@ -115,4 +115,20 @@ public class AutomationExerciseUITests : TestBase
         homePage.Header.ClickOnLogoutMenu();
         signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
     }
+
+    [Test, Property("TMSId", "Test Case 5"), Description("Register User with existing email")]
+    public void RegisterUserWithExistingEmail()
+    {
+        var user = new DataGeneratorService().GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
+        userSteps.RegisterUser(user);
+
+        homePage.Open();
+        homePage.IsPageOpened().Should().BeTrue();
+        homePage.Header.GoToSignupLoginMenu();
+
+        signupAndLoginPage.GetSignupFormTitle().Should().Be("New User Signup!");
+        signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
+        signupAndLoginPage.ClickOnSignUpBtn();
+        signupAndLoginPage.GetSignUpErrorMessage().Should().Be("Email Address already exist!");
+    }
 }
