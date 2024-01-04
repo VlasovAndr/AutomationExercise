@@ -6,13 +6,13 @@ namespace AutomationFramework.Core.Pages;
 
 public class SignupAndLoginPage : PageBase
 {
-    private const string PAGE_NAME = "Signup / Login Page";
-    private string PageUrl => $"{BaseUrl}/login";
+    public Header Header => header;
+
+    protected override string PageName => "Signup / Login Page";
+    protected override string PageUrl => $"{BaseUrl}/login";
 
     private readonly Header header;
     private readonly SignupAndLoginLocators repo;
-
-    public Header Header => header;
 
     public SignupAndLoginPage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, Header header, SignupAndLoginLocators repo)
         : base(browser, log, config)
@@ -21,16 +21,10 @@ public class SignupAndLoginPage : PageBase
         this.repo = repo;
     }
 
-    public void Open()
-    {
-        browser.NavigateToUrl(PageUrl);
-        log.Information($"|{PAGE_NAME}| {PAGE_NAME} is opened");
-    }
-
     public string GetSignupFormTitle()
     {
         string formTitle = browser.FindElement(repo.SignupFormTitle).Text;
-        log.Information($"|{PAGE_NAME}| Signup form title: '{formTitle}'");
+        LogPageInfo($"Signup form title: '{formTitle}'");
 
         return formTitle;
     }
@@ -39,26 +33,27 @@ public class SignupAndLoginPage : PageBase
     {
         browser.EnterText(repo.SignupNameField, name);
         browser.EnterText(repo.SignupEmailField, email);
-        log.Information($"|{PAGE_NAME}| Signup form filled");
+        LogPageInfo($"Signup form filled");
     }
 
     public void ClickOnSignUpBtn()
     {
         browser.FindElement(repo.SignupBtn).Click();
-        log.Information($"|{PAGE_NAME}| Clicked on 'SignUp' button");
+        LogPageInfo($"Clicked on 'SignUp' button");
     }
 
     public string GetSignUpErrorMessage()
     {
         var errorMessage = browser.FindElement(repo.SignUpErrorMessage).Text;
-        log.Information($"|{PAGE_NAME}| Error message is {errorMessage}");
+        LogPageInfo($"Error message is {errorMessage}");
+
         return errorMessage;
     }
 
     public string GetLoginFormTitle()
     {
         string formTitle = browser.FindElement(repo.LoginFormTitle).Text;
-        log.Information($"|{PAGE_NAME}| Login form title: '{formTitle}'");
+        LogPageInfo($"Login form title: '{formTitle}'");
 
         return formTitle;
     }
@@ -67,19 +62,19 @@ public class SignupAndLoginPage : PageBase
     {
         browser.EnterText(repo.LoginEmailField, email);
         browser.EnterText(repo.LoginPasswordField, password);
-        log.Information($"|{PAGE_NAME}| Login form filled");
+        LogPageInfo($"Login form filled");
     }
 
     public void ClickOnLoginBtn()
     {
         browser.FindElement(repo.LoginBtn).Click();
-        log.Information($"|{PAGE_NAME}| Clicked on 'Login' button");
+        LogPageInfo($"Clicked on 'Login' button");
     }
 
     public string GetLoginFormErrorMessage()
     {
         var message = browser.FindElement(repo.LoginFormErrorMessage).Text;
-        log.Information($"|{PAGE_NAME}| Login form error message: {message}");
+        LogPageInfo($"Login form error message: {message}");
 
         return message;
     }

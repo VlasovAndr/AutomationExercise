@@ -3,13 +3,15 @@ using AutomationFramework.Core.Configuration;
 
 namespace AutomationFramework.Core.Pages;
 
-public class PageBase
+public abstract class PageBase
 {
     protected readonly IWebDriverWrapper browser;
     protected readonly ILogging log;
-    private readonly TestRunConfiguration config;
-
     protected string BaseUrl => config.TargetEnvironment.Url;
+    protected virtual string PageName { get; }
+    protected virtual string PageUrl { get; }
+
+    private readonly TestRunConfiguration config;
 
     public PageBase(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config)
     {
@@ -18,10 +20,17 @@ public class PageBase
         this.config = config;
     }
 
+    public void Open()
+    {
+        browser.NavigateToUrl(PageUrl);
+        LogPageInfo($"{PageName} is opened");
+    }
+
     public string GetTitle()
     {
         var title = browser.WebDriver.Title;
         log.Information($"Current title - {title}");
+
         return title;
     }
 
@@ -47,5 +56,10 @@ public class PageBase
     {
         browser.CloseDriver();
         log.Information($"Browser is closed");
+    }
+
+    protected void LogPageInfo(string logMessage)
+    {
+        log.Information($"|{PageName}| {logMessage}");
     }
 }
