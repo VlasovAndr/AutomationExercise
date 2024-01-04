@@ -1,5 +1,4 @@
-﻿using AutomationFramework.Common.Abstractions;
-using AutomationFramework.Common.Services.API;
+﻿using AutomationFramework.Common.Services.API;
 using AutomationFrameworkCommon.Services;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,4 +32,16 @@ public class AutomationExerciseAPITests : TestBase
         result.Should().Contain("User created!");
     }
 
+    [Test, Property("TMSId", "API 12"), Description("DELETE METHOD To Delete User Account")]
+    public void DeleteUserAccount()
+    {
+        var user = new DataGeneratorService().GenerateRandomUser();
+        userAPIService.RegisterUserAccount(user);
+
+        var response = userAPIService.DeleteUserAccount(user.Account.Email, user.Account.Password);
+
+        var result = response.Content.ReadAsStringAsync().Result;
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        result.Should().Contain("Account deleted!");
+    }
 }
