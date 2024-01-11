@@ -47,9 +47,6 @@ public class TestBase
 
     private void Cleanup()
     {
-        log.Information("--------------------------------------");
-        log.Information("Starting Cleanup");
-        log.Information("--------------------------------------");
         cleanupService.Cleanup();
     }
 }
