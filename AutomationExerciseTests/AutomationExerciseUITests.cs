@@ -18,6 +18,8 @@ public class AutomationExerciseUITests : TestBase
     private readonly HomePage homePage;
     private readonly SignupAndLoginPage signupAndLoginPage;
     private readonly SignupPage signupPage;
+    private readonly ContactUsPage contactUsPage;
+    private readonly DataGeneratorService generatorService;
     private readonly IUserSteps userSteps;
 
     public AutomationExerciseUITests()
@@ -26,12 +28,14 @@ public class AutomationExerciseUITests : TestBase
         signupAndLoginPage = container.GetRequiredService<SignupAndLoginPage>();
         signupPage = container.GetRequiredService<SignupPage>();
         userSteps = container.GetRequiredKeyedService<IUserSteps>("API");
+        contactUsPage = container.GetRequiredService<ContactUsPage>();
+        generatorService = container.GetRequiredService<DataGeneratorService>();
     }
 
     [Test, Property("TMSId", "Test Case 1"), Description("Register User")]
     public void RegisterUser()
     {
-        var user = new DataGeneratorService().GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
+        var user = generatorService.GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
 
         homePage.Open();
         homePage.IsPageOpened().Should().BeTrue();
@@ -60,7 +64,7 @@ public class AutomationExerciseUITests : TestBase
     [Test, Property("TMSId", "Test Case 2"), Description("Login User with correct email and password")]
     public void LoginUserCorrectEmailAndPassword()
     {
-        var user = new DataGeneratorService().GenerateRandomUser();
+        var user = generatorService.GenerateRandomUser();
         userSteps.RegisterUser(user);
 
         homePage.Open();
@@ -97,7 +101,7 @@ public class AutomationExerciseUITests : TestBase
     [Test, Property("TMSId", "Test Case 4"), Description("Logout User")]
     public void LogoutUser()
     {
-        var user = new DataGeneratorService().GenerateRandomUser();
+        var user = generatorService.GenerateRandomUser();
         userSteps.RegisterUser(user);
 
         homePage.Open();
@@ -119,7 +123,7 @@ public class AutomationExerciseUITests : TestBase
     [Test, Property("TMSId", "Test Case 5"), Description("Register User with existing email")]
     public void RegisterUserWithExistingEmail()
     {
-        var user = new DataGeneratorService().GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
+        var user = generatorService.GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
         userSteps.RegisterUser(user);
 
         homePage.Open();
@@ -130,5 +134,26 @@ public class AutomationExerciseUITests : TestBase
         signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
         signupAndLoginPage.ClickOnSignUpBtn();
         signupAndLoginPage.GetSignUpErrorMessage().Should().Be("Email Address already exist!");
+    }
+
+    [Test, Property("TMSId", "Test Case 6"), Description("Contact Us Form")]
+    public void ContactUsForm()
+    {
+        var contactUsData = generatorService.GenerateContactUsInfo();
+        
+        homePage.Open();
+        homePage.IsPageOpened().Should().BeTrue();
+
+        homePage.Header.GoToContactUsMenu();
+        contactUsPage.GetContactUsFormTitle().Should().Be("GET IN TOUCH");
+
+        contactUsPage.FillContactUsForm(contactUsData);
+        contactUsPage.UploadFile("ContactUsData.jpg");
+        contactUsPage.Submit();
+        contactUsPage.GetSuccessfulMessage()
+            .Should().Be("Success! Your details have been submitted successfully.");
+
+        contactUsPage.Header.GoToHomeMenu();
+        homePage.IsPageOpened().Should().BeTrue();
     }
 }

@@ -10,6 +10,7 @@ using AutomationFramework.Core.Pages.Locators;
 using AutomationFramework.Core.Steps;
 using AutomationFramework.Common.Services.API;
 using AutomationFramework.Common.Services;
+using AutomationFrameworkCommon.Services;
 
 namespace AutomationFramework.Core.Dependencies;
 
@@ -35,10 +36,12 @@ public class DIContainer
             serviceCollection.AddSingleton<SignupAndLoginPage>();
             serviceCollection.AddSingleton<SignupPage>();
             serviceCollection.AddSingleton<Header>();
+            serviceCollection.AddSingleton<ContactUsPage>();
 
             serviceCollection.AddSingleton<HeaderLocators>();
             serviceCollection.AddSingleton<SignupAndLoginLocators>();
             serviceCollection.AddSingleton<SignupLocators>();
+            serviceCollection.AddSingleton<ContactUsLocators>();
 
             serviceCollection.AddTransient<APIClient>();
             serviceCollection.AddTransient<UserAPIService>();
@@ -47,6 +50,7 @@ public class DIContainer
             serviceCollection.AddKeyedSingleton<IUserSteps, UserAPISteps>("API");
 
             serviceCollection.AddSingleton<CleanupTestService>();
+            serviceCollection.AddSingleton<DataGeneratorService>();
         }
 
         return serviceCollection.BuildServiceProvider();

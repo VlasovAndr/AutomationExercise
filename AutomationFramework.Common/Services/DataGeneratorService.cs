@@ -39,4 +39,15 @@ public class DataGeneratorService
 
         return new User(accountInfo, addressInfo);
     }
+
+    public ContactUsInfo GenerateContactUsInfo()
+    {
+        var contactUsInfo = new ContactUsInfo(
+            _faker.Name.FirstName(),
+            _faker.Internet.Email(),
+            _faker.Commerce.Random.String2(20),
+            _faker.Commerce.Random.String2(20));
+
+        return contactUsInfo;
+    }
 }
