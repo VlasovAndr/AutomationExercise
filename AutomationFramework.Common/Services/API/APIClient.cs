@@ -16,9 +16,19 @@ public class APIClient : IDisposable
         return client;
     }
 
+    public Task<HttpResponseMessage> GetAsync(string requestUri)
+    {
+        return HttpClient.GetAsync(requestUri);
+    }
+
     public Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent httpContent)
     {
         return HttpClient.PostAsync(requestUri, httpContent);
+    }
+
+    public Task<HttpResponseMessage> PutAsync(string requestUri, HttpContent httpContent)
+    {
+        return HttpClient.PutAsync(requestUri, httpContent);
     }
 
     public Task<HttpResponseMessage> SendDeleteRequest(string requestUri, HttpContent httpContent)
