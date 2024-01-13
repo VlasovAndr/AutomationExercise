@@ -3,8 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using FluentAssertions;
-using AutomationFrameworkCommon.Services;
 using AutomationFramework.Common.Abstractions;
+using AutomationFramework.Common.Services;
 
 [assembly: LevelOfParallelism(3)]
 

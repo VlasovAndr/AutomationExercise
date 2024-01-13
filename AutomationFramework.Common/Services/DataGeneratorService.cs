@@ -1,7 +1,7 @@
 ﻿using AutomationFramework.Common.Models;
 using Bogus;
 
-namespace AutomationFrameworkCommon.Services;
+namespace AutomationFramework.Common.Services;
 
 public class DataGeneratorService
 {

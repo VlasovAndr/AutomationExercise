@@ -10,7 +10,6 @@ using AutomationFramework.Core.Pages.Locators;
 using AutomationFramework.Core.Steps;
 using AutomationFramework.Common.Services.API;
 using AutomationFramework.Common.Services;
-using AutomationFrameworkCommon.Services;
 
 namespace AutomationFramework.Core.Dependencies;
 
