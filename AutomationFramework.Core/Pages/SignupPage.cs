@@ -53,7 +53,7 @@ public class SignupPage : PageBase
         }
 
         var specOfferCheckBox = browser.FindElement(repo.SpecOfferCheckBox);
-        if (specOfferCheckBox.Selected != accountInfo.IsNewsletter)
+        if (specOfferCheckBox.Selected != accountInfo.IsSpecialOffers)
         {
             specOfferCheckBox.Click();
         }
