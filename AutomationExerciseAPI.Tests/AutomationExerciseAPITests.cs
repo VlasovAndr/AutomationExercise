@@ -13,12 +13,59 @@ namespace AutomationExerciseAPI.Tests;
 public class AutomationExerciseAPITests : TestBase
 {
     private readonly UserAPIService userAPIService;
+    private readonly LoginAPIService loginAPIService;
     private readonly DataGeneratorService generatorService;
 
     public AutomationExerciseAPITests()
     {
         userAPIService = container.GetRequiredService<UserAPIService>();
         generatorService = container.GetRequiredService<DataGeneratorService>();
+        loginAPIService = container.GetRequiredService<LoginAPIService>();
+    }
+
+    [Test, Property("TMSId", "API 7"), Description("POST To Verify Login with valid details")]
+    public void VerifyLoginWithValidDetails()
+    {
+        var user = new DataGeneratorService().GenerateRandomUser();
+        userAPIService.RegisterUserAccount(user);
+
+        var response = loginAPIService.VerifyLoginForUser(user.Account.Email, user.Account.Password);
+
+        response.StatusCode.Should().Be(200);
+        response.Message.Should().Be("User exists!");
+    }
+
+    [Test, Property("TMSId", "API 8"), Description("POST To Verify Login without email parameter")]
+    public void VerifyLoginWithoutEmailParameter()
+    {
+        var user = new DataGeneratorService().GenerateRandomUser();
+        userAPIService.RegisterUserAccount(user);
+
+        var response = loginAPIService.VerifyLoginForUser(null, user.Account.Password);
+
+        response.StatusCode.Should().Be(400);
+        response.Message.Should().Be("Bad request, email or password parameter is missing in POST request.");
+    }
+
+    [Test, Property("TMSId", "API 9"), Description("DELETE To Verify Login")]
+    public void VerifyLoginWithInvalidMethod()
+    {
+        var response = loginAPIService.VerifyLoginWithIncorrectMethod();
+
+        response.StatusCode.Should().Be(405);
+        response.Message.Should().Be("This request method is not supported.");
+    }
+
+    [Test, Property("TMSId", "API 10"), Description("POST To Verify Login with invalid details")]
+    public void VerifyLoginWithInvalidDetails()
+    {
+        string email = "notExistEmai@mail.com";
+        string password = "notExistPassword";
+
+        var response = loginAPIService.VerifyLoginForUser(email, password);
+
+        response.StatusCode.Should().Be(404);
+        response.Message.Should().Be("User not found!");
     }
 
     [Test, Property("TMSId", "API 11"), Description("POST To Create/Register User Account")]
