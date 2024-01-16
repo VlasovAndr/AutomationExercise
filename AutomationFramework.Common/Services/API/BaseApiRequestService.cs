@@ -8,6 +8,7 @@ public class BaseApiRequestService
 {
     private readonly APIClient apiClient;
     protected readonly ILogging log;
+    protected const string BASEURL = "https://automationexercise.com/api";
 
     public BaseApiRequestService(APIClient apiClient, ILogging log)
     {

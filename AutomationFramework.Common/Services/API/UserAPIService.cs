@@ -7,7 +7,6 @@ namespace AutomationFramework.Common.Services.API;
 public class UserAPIService : BaseApiRequestService
 {
     private CleanupTestService cleanup;
-    private const string BASEURL = "https://automationexercise.com/api";
 
     public UserAPIService(APIClient apiClient, ILogging log, CleanupTestService cleanup) : base(apiClient, log)
     {
