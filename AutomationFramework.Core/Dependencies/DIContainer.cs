@@ -44,6 +44,7 @@ public class DIContainer
 
             serviceCollection.AddTransient<APIClient>();
             serviceCollection.AddTransient<UserAPIService>();
+            serviceCollection.AddSingleton<LoginAPIService>();
 
             serviceCollection.AddKeyedSingleton<IUserSteps, UserUISteps>("UI");
             serviceCollection.AddKeyedSingleton<IUserSteps, UserAPISteps>("API");
