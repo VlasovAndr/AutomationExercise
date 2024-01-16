@@ -2,13 +2,13 @@
 
 public class AccountInfo
 {
-    public string Gender { get; }
-    public string Name { get; }
-    public string Email { get; }
-    public string Password { get; }
-    public DateTime DateOfBirth { get; }
-    public bool IsNewsletter { get; }
-    public bool IsSpecialOffers { get; }
+    public string Gender { get; set; }
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public string Password { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public bool IsNewsletter { get; set; }
+    public bool IsSpecialOffers { get; set; }
 
     public AccountInfo(string gender, string name, string email, string password, DateTime dateOfBirth, bool newsletter, bool specialOffers)
     {

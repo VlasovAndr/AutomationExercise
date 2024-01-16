@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 
-namespace AutomationExerciseUI.Tests;
+namespace AutomationExerciseAPI.Tests;
 
 public class TestBase
 {
@@ -32,10 +32,6 @@ public class TestBase
         else if (outcome == TestStatus.Failed)
         {
             log.Error($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
-
-            //Screenshot screenshot = (webDriver.WebDriver as ITakesScreenshot).GetScreenshot();
-            //screenshot.SaveAsFile("screenshot.png", ScreenshotImageFormat.Png);
-            //AllureLifecycle.Instance.AddAttachment("image1.png", "image/png", screenshot.AsByteArray);
         }
         else
         {
@@ -46,26 +42,11 @@ public class TestBase
         log.Information("Starting tearsown");
         log.Information("--------------------------------------");
 
-        var webDriver = container.GetRequiredService<IWebDriverWrapper>();
-
-        try
-        {
-            if (webDriver.IsWebDriverCreated)
-                webDriver.CloseDriver();
-        }
-        catch (Exception ex)
-        {
-            log.Error($"Failed on closing web driver on after test run event. {ex.Message}");
-        }
-
         Cleanup();
     }
 
     private void Cleanup()
     {
-        log.Information("--------------------------------------");
-        log.Information("Starting Cleanup");
-        log.Information("--------------------------------------");
         cleanupService.Cleanup();
     }
 }

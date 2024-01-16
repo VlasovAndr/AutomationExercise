@@ -14,4 +14,7 @@ public class DefaultVariables
 
     public string Config
         => Path.Combine(Solution, "AutomationFramework.Core", "Configuration", "Resources", "test-settings.json");
+
+    public string UITestDataFolder
+        => Path.Combine(Solution, "AutomationExerciseTests", "TestData");
 }

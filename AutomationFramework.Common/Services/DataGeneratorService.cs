@@ -1,7 +1,7 @@
 ﻿using AutomationFramework.Common.Models;
 using Bogus;
 
-namespace AutomationFrameworkCommon.Services;
+namespace AutomationFramework.Common.Services;
 
 public class DataGeneratorService
 {
@@ -38,5 +38,16 @@ public class DataGeneratorService
             );
 
         return new User(accountInfo, addressInfo);
+    }
+
+    public ContactUsInfo GenerateContactUsInfo()
+    {
+        var contactUsInfo = new ContactUsInfo(
+            _faker.Name.FirstName(),
+            _faker.Internet.Email(),
+            _faker.Commerce.Random.String2(20),
+            _faker.Commerce.Random.String2(20));
+
+        return contactUsInfo;
     }
 }

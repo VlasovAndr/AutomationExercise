@@ -2,16 +2,16 @@
 
 public class AddressInfo
 {
-    public string FirstName { get; }
-    public string LastName { get; }
-    public string Company { get; }
-    public string Address { get; }
-    public string Address2 { get; }
-    public string Country { get; }
-    public string State { get; }
-    public string City { get; }
-    public string Zipcode { get; }
-    public string MobileNumber { get; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Company { get; set; }
+    public string Address { get; set; }
+    public string Address2 { get; set; }
+    public string Country { get; set; }
+    public string State { get; set; }
+    public string City { get; set; }
+    public string Zipcode { get; set; }
+    public string MobileNumber { get; set; }
 
     public AddressInfo(string firstName, string lastName, string company, string address,
         string address2, string country, string state, string city, string zipcode, string mobileNumber)
