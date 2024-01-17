@@ -9,8 +9,8 @@ namespace AutomationExerciseUI.Tests;
 
 public class TestBase
 {
-    public IServiceProvider container;
-    public ILogging log;
+    public readonly IServiceProvider container;
+    public readonly ILogging log;
     private readonly CleanupTestService cleanupService;
 
     public TestBase()
@@ -58,14 +58,6 @@ public class TestBase
             log.Error($"Failed on closing web driver on after test run event. {ex.Message}");
         }
 
-        Cleanup();
-    }
-
-    private void Cleanup()
-    {
-        log.Information("--------------------------------------");
-        log.Information("Starting Cleanup");
-        log.Information("--------------------------------------");
         cleanupService.Cleanup();
     }
 }
