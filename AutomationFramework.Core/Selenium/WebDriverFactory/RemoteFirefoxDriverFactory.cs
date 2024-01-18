@@ -22,7 +22,7 @@ public class RemoteFirefoxDriverFactory : INamedBrowserFactory
 
     public IWebDriver Create()
     {
-        log.Debug("Creating Remote Firefox Driver");
+        log.Information("Creating Remote Firefox Driver");
 
         var options = new FirefoxOptions();
         options.SetPreference("browser.download.prompt_for_download", false);

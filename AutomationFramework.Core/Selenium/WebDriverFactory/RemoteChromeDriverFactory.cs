@@ -22,7 +22,7 @@ public class RemoteChromeDriverFactory : INamedBrowserFactory
 
     public IWebDriver Create()
     {
-        log.Debug("Creating Remote Chrome Driver");
+        log.Information("Creating Remote Chrome Driver");
 
         var options = new ChromeOptions();
         options.AddUserProfilePreference("download.prompt_for_download", false);

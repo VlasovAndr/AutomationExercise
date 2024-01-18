@@ -21,7 +21,7 @@ public class ChromeDriverFactory : INamedBrowserFactory
 
     public IWebDriver Create()
     {
-        log.Debug("Creating ChromeDriver");
+        log.Information("Creating ChromeDriver");
 
         var options = new ChromeOptions();
         options.AddUserProfilePreference("download.prompt_for_download", false);
