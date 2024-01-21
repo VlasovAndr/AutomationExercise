@@ -229,7 +229,7 @@ public class WebDriverWrapper : IWebDriverWrapper
     {
         ITakesScreenshot screen = WebDriver as ITakesScreenshot;
         Screenshot screenshot = screen.GetScreenshot();
-        screenshot.SaveAsFile(path, ScreenshotImageFormat.Png);
+        //screenshot.SaveAsFile(path, ScreenshotImageFormat.Png);
     }
 
 
