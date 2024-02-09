@@ -24,6 +24,7 @@ public class DIContainer
             serviceCollection = new ServiceCollection();
             serviceCollection.AddSingleton<DefaultVariables>();
             serviceCollection.AddScoped<ILogging, ConsoleLogger>(); // [ConsoleLogger/FileLogger/SpecflowLogger/]
+            serviceCollection.AddSingleton<ITestReporter, AllureReporter>();
             serviceCollection.AddSingleton<TestRunConfiguration>();
             serviceCollection.AddSingleton<INamedBrowserFactory, ChromeDriverFactory>();
             serviceCollection.AddSingleton<INamedBrowserFactory, FirefoxDriverFactory>();
