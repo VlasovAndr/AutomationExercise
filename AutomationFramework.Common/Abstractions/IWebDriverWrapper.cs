@@ -42,8 +42,12 @@ public interface IWebDriverWrapper
 
     void CloseCurrentTab();
 
-    void TakeScreenshot(string path);
+    void SaveScreenshot(string path);
     
+    byte[] GetScreenshot();
+
+    public string GetBrowserLogs();
+
     void SelectFromDropDownByText(string xPath, string text);
 
     void SelectFromDropDownByValue(string xPath, string value);
