@@ -46,7 +46,7 @@ public interface IWebDriverWrapper
     
     byte[] GetScreenshot();
 
-    public string GetBrowserLogs();
+    string GetBrowserLogs();
 
     void SelectFromDropDownByText(string xPath, string text);
 
