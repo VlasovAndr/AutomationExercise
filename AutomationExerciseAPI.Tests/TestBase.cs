@@ -9,8 +9,8 @@ namespace AutomationExerciseAPI.Tests;
 
 public class TestBase
 {
-    public IServiceProvider container;
-    public ILogging log;
+    public readonly IServiceProvider container;
+    public readonly ILogging log;
     private readonly CleanupTestService cleanupService;
 
     public TestBase()
@@ -42,11 +42,6 @@ public class TestBase
         log.Information("Starting tearsown");
         log.Information("--------------------------------------");
 
-        Cleanup();
-    }
-
-    private void Cleanup()
-    {
         cleanupService.Cleanup();
     }
 }

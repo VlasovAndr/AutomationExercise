@@ -16,7 +16,7 @@ public class ConsoleLogger : ILogging
              outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
             .Enrich.WithThreadId().CreateLogger();
 
-        Debug("Logger is ConsoleLogger");
+        Information("Logger is ConsoleLogger");
     }
 
     public void SetLogLevel(string loglevel)
@@ -43,7 +43,7 @@ public class ConsoleLogger : ILogging
 
     public void Debug(string msg) => Log.Logger.Debug(msg);
 
-    public void Error(string msg) => Log.Logger.Error(msg);
+    public void Error(string msg) => Log.Logger.Error($"\n{msg}\n");
 
     public void Warning(string msg) => Log.Logger.Warning(msg);
 

@@ -3,7 +3,6 @@ using AutomationFramework.Core.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using SeleniumExtras.WaitHelpers;
 
 namespace AutomationFramework.Core.Selenium;
 
@@ -51,8 +50,8 @@ public class WebDriverWrapper : IWebDriverWrapper
         }
         catch (Exception ex)
         {
-            log.Error("Error occurred while closing driver. Message: " + ex.Message);
-            throw new Exception(ex.Message);
+            log.Error($"Error details: {ex}");
+            throw new Exception($"Error occurred while closing driver. Please see logs for more details.", ex);
         }
     }
 
@@ -60,7 +59,7 @@ public class WebDriverWrapper : IWebDriverWrapper
     {
         if (string.IsNullOrEmpty(url))
         {
-            throw new ArgumentNullException(nameof(url), "URL cannot be null or empty.");
+            throw new ArgumentNullException("URL cannot be null or empty.");
         }
 
         WebDriver.Navigate().GoToUrl(url);
@@ -72,7 +71,7 @@ public class WebDriverWrapper : IWebDriverWrapper
 
         if (tabIndex < 0 || tabIndex >= tabs.Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(tabIndex), $"Tab index '{tabIndex}' is out of range.");
+            throw new ArgumentOutOfRangeException("Tab index '{tabIndex}' is out of range.");
         }
 
         WebDriver.SwitchTo().Window(tabs[tabIndex]);
@@ -89,12 +88,16 @@ public class WebDriverWrapper : IWebDriverWrapper
         var element = GetElementFromDOM(xPath);
         if (element != null)
         {
+            // Scroll to the item view if the advertisement exists
             ExecuteAsyncJSScriptForElement("arguments[0].scrollIntoView();", element);
             CheckClickabilityOfElement(xPath, timeout);
             return element;
         }
 
         throw new Exception($"Element with xPath '{xPath}' was not found.");
+
+        //CheckClickabilityOfElement(xPath, timeout);
+        //return WebDriver.FindElement(By.XPath(xPath));
     }
 
     public IWebElement FindElement(string xPath, string frameName, int timeout = 10)
@@ -126,39 +129,42 @@ public class WebDriverWrapper : IWebDriverWrapper
 
         try
         {
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(xPath)));
-            return;
+            wait.Until(x =>
+            {
+                var element = x.FindElement(By.XPath(xPath));
+                return element.Displayed && element.Enabled;
+            });
         }
-        catch (WebDriverTimeoutException)
+        catch (WebDriverTimeoutException ex)
         {
-            log.Error($"Element with xPath '{xPath}' is not сlickable.");
+            log.Error($"Error details: {ex}");
+            throw new Exception($"Element with xPath '{xPath}' is not сlickable.", ex);
         }
         catch (Exception e)
         {
-            log.Error($"An error occurred while searching for element with xPath '{xPath}'. Exception: {e.Message}");
-            throw;
+            log.Error($"Error details: {e}");
+            throw new Exception($"An error occurred while searching for element with xPath '{xPath}'.", e);
         }
-
-        throw new Exception($"Element with xPath '{xPath}' is not сlickable.");
     }
 
-    public bool IsElementVisibleOnPage(string xPath, int timeout = 10)
+    public bool IsElementVisibleOnPage(string xPath, int timeout = 5)
     {
         var isPresented = false;
 
         try
         {
             var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(timeout));
-            var element = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath(xPath)));
-            isPresented = true;
+            isPresented = wait.Until(x => x.FindElement(By.XPath(xPath)).Displayed);
         }
-        catch (WebDriverTimeoutException)
+        catch (WebDriverTimeoutException ex)
         {
-            log.Error($"Element with xPath '{xPath}' was not visible within the specified timeout.");
+            log.Error($"Error details: {ex}");
+            throw new Exception($"Element with xPath '{xPath}' was not visible within the specified timeout.", ex);
         }
         catch (Exception e)
         {
-            log.Error($"An error occurred while searching for element with xPath '{xPath}'. Exception: {e.Message}");
+            log.Error($"Error details: {e}");
+            throw new Exception($"An error occurred while searching for element with xPath '{xPath}'.", e);
         }
 
         return isPresented;
@@ -169,17 +175,14 @@ public class WebDriverWrapper : IWebDriverWrapper
         try
         {
             var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(timeout));
-            return wait.Until(ExpectedConditions.ElementExists(By.XPath(xPath)));
-        }
-        catch (WebDriverTimeoutException e)
-        {
-            log.Error($"Element with xPath '{xPath}' is not exist in the current DOM model. Exception: {e.Message}");
-            throw;
+            var element = wait.Until(x => x.FindElement(By.XPath(xPath)));
+            return element;
         }
         catch (Exception e)
         {
-            log.Error($"An error occurred while searching for element with xPath '{xPath}'. Exception: {e.Message}");
-            throw;
+            var errorMessage = $"Element with xPath '{xPath}' does not exist in the current DOM model.";
+            log.Error(e.ToString());
+            throw new Exception(errorMessage, e);
         }
     }
 
@@ -225,13 +228,27 @@ public class WebDriverWrapper : IWebDriverWrapper
         Thread.Sleep(timeInSeconds * 1000);
     }
 
-    public void TakeScreenshot(string path)
+    public void SaveScreenshot(string path)
     {
         ITakesScreenshot screen = WebDriver as ITakesScreenshot;
         Screenshot screenshot = screen.GetScreenshot();
-        screenshot.SaveAsFile(path, ScreenshotImageFormat.Png);
+        screenshot.SaveAsFile(path);
     }
 
+    public byte[] GetScreenshot()
+    {
+        ITakesScreenshot screen = WebDriver as ITakesScreenshot;
+        var screenshot = screen.GetScreenshot();
+        return screenshot.AsByteArray;
+    }
+
+    public string GetBrowserLogs()
+    {
+        var browserLogs = WebDriver.Manage().Logs.GetLog(LogType.Browser);
+        var browserLogsList = browserLogs.Select(x => x.ToString());
+        var logs = string.Join('\n', browserLogsList);
+        return logs;
+    }
 
     public object ExecuteAsyncJSScriptForElement(string script, IWebElement element)
     {

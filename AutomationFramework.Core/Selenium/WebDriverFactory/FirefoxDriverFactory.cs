@@ -21,7 +21,7 @@ public class FirefoxDriverFactory : INamedBrowserFactory
 
     public IWebDriver Create()
     {
-        log.Debug("Creating FirefoxDriver");
+        log.Information("Creating FirefoxDriver");
 
         var options = new FirefoxOptions();
         options.SetPreference("browser.download.prompt_for_download", false);

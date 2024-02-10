@@ -54,9 +54,7 @@ public class BaseApiRequestService
     public T HandleResponseMessage<T>(string response)
         where T : BaseAPIResponse
     {
-        var a = new JsonSerializerOptions();
-        a.IncludeFields = false;
-        var result = JsonSerializer.Deserialize<T>(response, a);
+        var result = JsonSerializer.Deserialize<T>(response);
         return result;
     }
 }

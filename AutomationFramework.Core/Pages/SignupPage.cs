@@ -2,6 +2,7 @@
 using AutomationFramework.Common.Models;
 using AutomationFramework.Core.Configuration;
 using AutomationFramework.Core.Pages.Locators;
+using NUnit.Allure.Attributes;
 
 namespace AutomationFramework.Core.Pages;
 
@@ -9,23 +10,25 @@ public class SignupPage : PageBase
 {
     public Header Header => header;
 
-    protected override string PageName => "Signup Page";
+    protected override string PageName => pageName;
     protected override string PageUrl => $"{BaseUrl}/signup";
 
+    private const string pageName = "Signup Page";
     private readonly Header header;
     private readonly SignupLocators repo;
 
-    public SignupPage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, Header header, SignupLocators repo)
-        : base(browser, log, config)
+    public SignupPage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, Header header, SignupLocators repo, ITestReporter reporter) 
+        : base(browser, log, config, reporter)
     {
         this.header = header;
         this.repo = repo;
     }
 
+    [AllureStep($"|{pageName}| Getting signup form title")]
     public string GetSignupFormTitle()
     {
         string formTitle = browser.FindElement(repo.SignupFormTitle).Text;
-        LogPageInfo($"Signup form title: '{formTitle}'");
+        LogParameterInfo("Signup form title", formTitle);
 
         return formTitle;
     }
@@ -34,9 +37,9 @@ public class SignupPage : PageBase
     {
         FillAccountInfoForm(accountInfo);
         FillAddressInfoForm(addressInfo);
-        LogPageInfo($"Signup form filled");
     }
 
+    [AllureStep($"|{pageName}| Filling account info form")]
     public void FillAccountInfoForm(AccountInfo accountInfo)
     {
         browser.FindElement(repo.GenderRadioBtn(accountInfo.Gender)).Click();
@@ -57,10 +60,9 @@ public class SignupPage : PageBase
         {
             specOfferCheckBox.Click();
         }
-
-        LogPageInfo($"Account information form filled");
     }
 
+    [AllureStep($"|{pageName}| Filling address info form")]
     public void FillAddressInfoForm(AddressInfo addressInfo)
     {
         browser.EnterText(repo.FirstNameField, addressInfo.FirstName);
@@ -75,33 +77,34 @@ public class SignupPage : PageBase
         browser.EnterText(repo.CityField, addressInfo.City);
         browser.EnterText(repo.ZipcodeField, addressInfo.Zipcode.ToString());
         browser.EnterText(repo.MobileNumberField, addressInfo.MobileNumber.ToString());
-        LogPageInfo($"Address information form filled");
     }
 
-    public void ClickOnCreateAccountBtn()
+    [AllureStep($"|{pageName}| Submiting signup form")]
+    public void SubmitSignupForm()
     {
         browser.FindElement(repo.CreateAccountBtn).Click();
-        LogPageInfo($"Clicked on 'Create Account' button");
     }
 
+    [AllureStep($"|{pageName}| Clicking on continue button")]
     public void ClickOnContinueBtn()
     {
         browser.FindElement(repo.ContinueBtn).Click();
-        LogPageInfo($"Clicked on 'Continue' button");
     }
 
+    [AllureStep($"|{pageName}| Getting created message")]
     public string GetAccountCreatedMessage()
     {
         string createAccountMessage = browser.FindElement(repo.CreateAccountMessage).Text;
-        LogPageInfo($"Account created message: '{createAccountMessage}'");
+        LogParameterInfo("Account created message", createAccountMessage);
 
         return createAccountMessage;
     }
 
+    [AllureStep($"|{pageName}| Getting deleted message")]
     public string GetAccountDeletedMessage()
     {
         string deleteAccountMessage = browser.FindElement(repo.DeleteAccountMessage).Text;
-        LogPageInfo($"Account deleted message: '{deleteAccountMessage}'");
+        LogParameterInfo("Account deleted message", deleteAccountMessage);
 
         return deleteAccountMessage;
     }

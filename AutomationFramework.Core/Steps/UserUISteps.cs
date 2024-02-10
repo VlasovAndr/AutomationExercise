@@ -22,11 +22,11 @@ public class UserUISteps : IUserSteps
     {
         signupAndLoginPage.Open();
         signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
-        signupAndLoginPage.ClickOnSignUpBtn();
+        signupAndLoginPage.SubmitSignupForm();
 
         signupPage.FillAccountInfoForm(user.Account);
         signupPage.FillAddressInfoForm(user.Address);
-        signupPage.ClickOnCreateAccountBtn();
+        signupPage.SubmitSignupForm();
         signupPage.ClickOnContinueBtn();
         signupPage.Close();
     }
@@ -35,7 +35,7 @@ public class UserUISteps : IUserSteps
     {
         signupAndLoginPage.Open();
         signupAndLoginPage.FillLoginForm(email, password);
-        signupAndLoginPage.ClickOnLoginBtn();
+        signupAndLoginPage.SubmitLoginForm();
         signupAndLoginPage.Close();
     }
 }

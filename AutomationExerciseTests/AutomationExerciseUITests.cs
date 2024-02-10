@@ -5,6 +5,8 @@ using NUnit.Framework.Internal;
 using FluentAssertions;
 using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Common.Services;
+using NUnit.Allure.Attributes;
+using NUnit.Allure.Core;
 
 [assembly: LevelOfParallelism(3)]
 
@@ -13,6 +15,8 @@ namespace AutomationExerciseUI.Tests;
 [TestFixture]
 [Parallelizable(ParallelScope.All)]
 [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
+[AllureNUnit]
+[AllureFeature("UI Tests")]
 public class AutomationExerciseUITests : TestBase
 {
     private readonly HomePage homePage;
@@ -33,6 +37,8 @@ public class AutomationExerciseUITests : TestBase
     }
 
     [Test, Property("TMSId", "Test Case 1"), Description("Register User")]
+    [AllureName("Register User")]
+    [Retry(3)]
     public void RegisterUser()
     {
         var user = generatorService.GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
@@ -43,12 +49,12 @@ public class AutomationExerciseUITests : TestBase
 
         signupAndLoginPage.GetSignupFormTitle().Should().Be("New User Signup!");
         signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
-        signupAndLoginPage.ClickOnSignUpBtn();
+        signupAndLoginPage.SubmitSignupForm();
 
         signupPage.GetSignupFormTitle().Should().Be("ENTER ACCOUNT INFORMATION");
         signupPage.FillAccountInfoForm(user.Account);
         signupPage.FillAddressInfoForm(user.Address);
-        signupPage.ClickOnCreateAccountBtn();
+        signupPage.SubmitSignupForm();
         signupPage.GetAccountCreatedMessage().Should().Be("ACCOUNT CREATED!");
         signupPage.ClickOnContinueBtn();
 
@@ -62,6 +68,8 @@ public class AutomationExerciseUITests : TestBase
     }
 
     [Test, Property("TMSId", "Test Case 2"), Description("Login User with correct email and password")]
+    [AllureName("Login User with correct email and password")]
+    [Retry(2)]
     public void LoginUserCorrectEmailAndPassword()
     {
         var user = generatorService.GenerateRandomUser();
@@ -73,7 +81,7 @@ public class AutomationExerciseUITests : TestBase
 
         signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
         signupAndLoginPage.FillLoginForm(user.Account.Email, user.Account.Password);
-        signupAndLoginPage.ClickOnLoginBtn();
+        signupAndLoginPage.SubmitLoginForm();
 
         homePage.Header.GetAllHeadersText()
             .Any(x => x.Contains($"Logged in as {user.Account.Name}"))
@@ -84,6 +92,8 @@ public class AutomationExerciseUITests : TestBase
     }
 
     [Test, Property("TMSId", "Test Case 3"), Description("Login User with incorrect email and password")]
+    [AllureName("Login User with incorrect email and password")]
+    [Retry(2)]
     public void LoginUserIncorrectEmailAndPassword()
     {
         homePage.Open();
@@ -92,13 +102,15 @@ public class AutomationExerciseUITests : TestBase
 
         signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
         signupAndLoginPage.FillLoginForm("EmailNotExist@mail.com", "Password");
-        signupAndLoginPage.ClickOnLoginBtn();
+        signupAndLoginPage.SubmitLoginForm();
 
         signupAndLoginPage.GetLoginFormErrorMessage()
             .Should().Be("Your email or password is incorrect!");
     }
 
     [Test, Property("TMSId", "Test Case 4"), Description("Logout User")]
+    [AllureName("Logout User")]
+    [Retry(2)]
     public void LogoutUser()
     {
         var user = generatorService.GenerateRandomUser();
@@ -110,7 +122,7 @@ public class AutomationExerciseUITests : TestBase
 
         signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
         signupAndLoginPage.FillLoginForm(user.Account.Email, user.Account.Password);
-        signupAndLoginPage.ClickOnLoginBtn();
+        signupAndLoginPage.SubmitLoginForm();
 
         homePage.Header.GetAllHeadersText()
             .Any(x => x.Contains($"Logged in as {user.Account.Name}"))
@@ -121,6 +133,8 @@ public class AutomationExerciseUITests : TestBase
     }
 
     [Test, Property("TMSId", "Test Case 5"), Description("Register User with existing email")]
+    [AllureName("Register User with existing email")]
+    [Retry(2)]
     public void RegisterUserWithExistingEmail()
     {
         var user = generatorService.GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
@@ -132,15 +146,17 @@ public class AutomationExerciseUITests : TestBase
 
         signupAndLoginPage.GetSignupFormTitle().Should().Be("New User Signup!");
         signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
-        signupAndLoginPage.ClickOnSignUpBtn();
+        signupAndLoginPage.SubmitSignupForm();
         signupAndLoginPage.GetSignUpErrorMessage().Should().Be("Email Address already exist!");
     }
 
     [Test, Property("TMSId", "Test Case 6"), Description("Contact Us Form")]
+    [AllureName("Contact Us Form")]
+    [Retry(3)]
     public void ContactUsForm()
     {
         var contactUsData = generatorService.GenerateContactUsInfo();
-        
+
         homePage.Open();
         homePage.IsPageOpened().Should().BeTrue();
 

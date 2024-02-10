@@ -1,34 +1,50 @@
 ﻿using AutomationFramework.Common.Abstractions;
+using AutomationFramework.Core.Pages.Components;
 using AutomationFramework.Core.Pages.Locators;
+using NUnit.Allure.Attributes;
 
 namespace AutomationFramework.Core.Pages;
 
-public class Header
+public class Header : ComponentBase
 {
     private readonly HeaderLocators repo;
     private readonly IWebDriverWrapper browser;
-    private readonly ILogging log;
+    private const string componentName = "Header";
 
-    public Header(IWebDriverWrapper browser, ILogging log, HeaderLocators repo)
+    protected override string ComponentName => componentName;
+
+    public Header(IWebDriverWrapper browser, ILogging log, HeaderLocators repo, ITestReporter reporter)
+        : base(log, reporter)
     {
         this.repo = repo;
         this.browser = browser;
-        this.log = log;
     }
 
-    public bool IsHeaderBlockVisible() => browser.IsElementVisibleOnPage(repo.HeaderElement);
+    [AllureStep($"|{componentName}| Getting header block visibility status")]
+    public bool IsHeaderBlockVisible()
+    {
+        var isHeaderBlockVisible = browser.IsElementVisibleOnPage(repo.HeaderElement);
+        LogParameterInfo("isHeaderBlockVisible", isHeaderBlockVisible.ToString());
+        return isHeaderBlockVisible;
+    }
 
-    public void GoToHomeMenu() => browser.FindElement(repo.HeaderMenuByName("Home")).Click();
-    public void GoToProductsMenu() => browser.FindElement(repo.HeaderMenuByName("Products")).Click();
-    public void GoToCartMenu() => browser.FindElement(repo.HeaderMenuByName("Cart")).Click();
-    public void GoToSignupLoginMenu() => browser.FindElement(repo.HeaderMenuByName("Signup / Login")).Click();
-    public void GoToTestCasesMenu() => browser.FindElement(repo.HeaderMenuByName("Test Cases")).Click();
-    public void GoToAPITestingMenu() => browser.FindElement(repo.HeaderMenuByName("API Testing")).Click();
-    public void GoToVideoTutorialsMenu() => browser.FindElement(repo.HeaderMenuByName("Video Tutorials")).Click();
-    public void GoToContactUsMenu() => browser.FindElement(repo.HeaderMenuByName("Contact us")).Click();
-    public void ClickOnDeleteAccountMenu() => browser.FindElement(repo.HeaderMenuByName("Delete Account")).Click();
-    public void ClickOnLogoutMenu() => browser.FindElement(repo.HeaderMenuByName("Logout")).Click();
+    public void GoToHomeMenu() => GoToMenu("Home");
+    public void GoToProductsMenu() => GoToMenu("Products");
+    public void GoToCartMenu() => GoToMenu("Cart");
+    public void GoToSignupLoginMenu() => GoToMenu("Signup / Login");
+    public void GoToTestCasesMenu() => GoToMenu("Test Cases");
+    public void GoToAPITestingMenu() => GoToMenu("API Testing");
+    public void GoToVideoTutorialsMenu() => GoToMenu("Video Tutorials");
+    public void GoToContactUsMenu() => GoToMenu("Contact us");
+    public void ClickOnDeleteAccountMenu() => GoToMenu("Delete Account");
+    public void ClickOnLogoutMenu() => GoToMenu("Logout");
 
     public List<string> GetAllHeadersText() => browser.FindElements(repo.HeaderMenuByName(""))
         .Select(x => x.GetAttribute("innerText")).ToList();
+
+    [AllureStep($"|{componentName}| Go to {{menuName}} menu")]
+    private void GoToMenu(string menuName)
+    {
+        browser.FindElement(repo.HeaderMenuByName(menuName)).Click();
+    }
 }
