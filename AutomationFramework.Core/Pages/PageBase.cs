@@ -28,6 +28,12 @@ public abstract class PageBase
         LogPageInfo($"{PageName} is opened");
     }
 
+    public void Close()
+    {
+        browser.CloseDriver();
+        LogPageInfo($"{PageName} is closed");
+    }
+
     protected void LogPageInfo(string logMessage)
     {
         reporter.AddInfo($"|{PageName}| {logMessage}");
