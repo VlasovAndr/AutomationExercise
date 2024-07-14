@@ -30,7 +30,7 @@ public class ChromeDriverFactory : INamedBrowserFactory
         options.AddUserProfilePreference("safebrowsing.enabled", "true");
         //"no-sandbox" and "--disable-gpu" must work together. Or it will need to delete.
         //"no-sandbox" parameter is usefull for running in container 
-        options.AddArgument("no-sandbox");
+        // options.AddArgument("no-sandbox");
         options.AddArgument("--disable-gpu");
         options.AddArgument("disable-popup-blocking");
         options.AddUserProfilePreference("download.default_directory", testRunConfiguration.Framework.DownloadedLocation);
