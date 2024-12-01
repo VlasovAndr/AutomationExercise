@@ -1,37 +1,39 @@
 ﻿using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Core.Configuration;
+using Microsoft.Playwright;
 
 namespace AutomationFramework.Core.Pages;
 
 public abstract class PageBase
 {
-    protected readonly IWebDriverWrapper browser;
-    protected readonly ILogging log;
     protected string BaseUrl => config.TargetEnvironment.Url;
     protected virtual string PageName { get; }
     protected virtual string PageUrl => BaseUrl;
+    protected IPage Page => page;
 
+    private readonly IPage page;
     private ITestReporter reporter;
     private readonly TestRunConfiguration config;
 
-    public PageBase(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, ITestReporter reporter)
+    public PageBase(IPage page, TestRunConfiguration config, ITestReporter reporter)
     {
-        this.browser = browser;
-        this.log = log;
+        this.page = page;
         this.config = config;
         this.reporter = reporter;
     }
 
-    public void Open()
+    public async Task Open()
     {
-        browser.NavigateToUrl(PageUrl);
+        await Page.GotoAsync(PageUrl);
         LogPageInfo($"{PageName} is opened");
     }
 
-    public void Close()
+    public async Task ClearPage()
     {
-        browser.CloseDriver();
-        LogPageInfo($"{PageName} is closed");
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.ClearPermissionsAsync();
+        await Page.ReloadAsync();
+        LogPageInfo($"{PageName} is cleared");
     }
 
     protected void LogPageInfo(string logMessage)

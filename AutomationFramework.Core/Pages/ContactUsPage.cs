@@ -3,8 +3,8 @@ using AutomationFramework.Common.Models;
 using AutomationFramework.Common.Variables;
 using AutomationFramework.Core.Configuration;
 using AutomationFramework.Core.Pages.Locators;
+using Microsoft.Playwright;
 using NUnit.Allure.Attributes;
-using OpenQA.Selenium;
 
 namespace AutomationFramework.Core.Pages;
 
@@ -20,9 +20,9 @@ public class ContactUsPage : PageBase
     private readonly DefaultVariables variables;
     private const string pageName = "ContactUsPage Page";
 
-    public ContactUsPage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config,
-        Header header, ContactUsLocators repo, DefaultVariables variables, ITestReporter reporter)
-        : base(browser, log, config, reporter)
+    public ContactUsPage(IPage page, TestRunConfiguration config, Header header, 
+        ContactUsLocators repo, DefaultVariables variables, ITestReporter reporter)
+        : base(page, config, reporter)
     {
         this.header = header;
         this.repo = repo;
@@ -30,42 +30,46 @@ public class ContactUsPage : PageBase
     }
 
     [AllureStep($"|{pageName}| Getting contact us form title")]
-    public string GetContactUsFormTitle()
+    public async Task<string> GetContactUsFormTitle()
     {
-        string formTitle = browser.FindElement(repo.ContactUsFormHeader).Text;
+        var formTitle = await Page.Locator(repo.ContactUsFormHeader).TextContentAsync();
         LogParameterInfo("Contact us form title", formTitle);
 
         return formTitle;
     }
 
     [AllureStep($"|{pageName}| Filling contact us form")]
-    public void FillContactUsForm(ContactUsInfo data)
+    public async Task FillContactUsForm(ContactUsInfo data)
     {
-        browser.EnterText(repo.NameField, data.Name);
-        browser.EnterText(repo.EmailField, data.Email);
-        browser.EnterText(repo.SubjectField, data.Subject);
-        browser.EnterText(repo.MessageField, data.Message);
+        await Page.Locator(repo.NameField).FillAsync(data.Name);
+        await Page.Locator(repo.EmailField).FillAsync(data.Email);
+        await Page.Locator(repo.SubjectField).FillAsync(data.Subject);
+        await Page.Locator(repo.MessageField).FillAsync(data.Message);
     }
 
     [AllureStep($"|{pageName}| Uploading file")]
-    public void UploadFile(string fileName)
+    public async Task UploadFile(string fileName)
     {
         var fullFilePath = Path.Combine(variables.UITestDataFolder, fileName);
-        browser.EnterText(repo.UploadFileField, fullFilePath);
+        await Page.Locator(repo.UploadFileField).SetInputFilesAsync(fullFilePath);
     }
 
     [AllureStep($"|{pageName}| Submiting contact us form")]
-    public void Submit()
+    public async Task Submit()
     {
-        browser.FindElement(repo.SubmitBtn).Click();
-        IAlert alert = browser.WebDriver.SwitchTo().Alert();
-        alert.Accept();
+        Thread.Sleep(1000);
+        Page.Dialog += async (_, dialog) =>
+        {
+            await dialog.AcceptAsync();
+        };
+        await Page.Locator(repo.SubmitBtn).ClickAsync();
     }
 
     [AllureStep($"|{pageName}| Getting successful message")]
-    public string GetSuccessfulMessage()
+    public async Task<string> GetSuccessfulMessage()
     {
-        string message = browser.FindElement(repo.SuccessfulMessage).Text;
+        var message = await Page.Locator(repo.SuccessfulMessage).TextContentAsync();
+
         LogParameterInfo("Successful message", message);
 
         return message;

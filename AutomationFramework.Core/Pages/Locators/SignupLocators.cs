@@ -2,7 +2,7 @@
 
 public class SignupLocators
 {
-    public string SignupForm => $".//div[@class = 'login-form']";
+    public string SignupForm => $"//div[@class = 'login-form']";
     public string CreateAccountBtn => $"{SignupForm}//button[@data-qa = 'create-account']";
     public string CreateAccountMessage => $"//h2[@data-qa = 'account-created']/b";
     public string DeleteAccountMessage => $"//h2[@data-qa = 'account-deleted']/b";

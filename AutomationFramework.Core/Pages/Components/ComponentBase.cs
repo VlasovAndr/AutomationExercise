@@ -1,17 +1,19 @@
 ﻿using AutomationFramework.Common.Abstractions;
+using Microsoft.Playwright;
 
 namespace AutomationFramework.Core.Pages.Components
 {
     public abstract class ComponentBase
     {
-        private ILogging log;
         private readonly ITestReporter reporter;
+        private readonly IPage page;
+        protected IPage Page => page;
 
         protected virtual string ComponentName { get; }
 
-        public ComponentBase(ILogging log, ITestReporter reporter)
+        public ComponentBase(IPage page, ITestReporter reporter)
         {
-            this.log = log;
+            this.page = page;
             this.reporter = reporter;
         }
 

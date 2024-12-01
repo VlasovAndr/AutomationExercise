@@ -1,5 +1,4 @@
 ﻿using AutomationFramework.Core.Pages;
-using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using FluentAssertions;
@@ -7,6 +6,7 @@ using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Common.Services;
 using NUnit.Allure.Attributes;
 using NUnit.Allure.Core;
+using Microsoft.Extensions.DependencyInjection;
 
 [assembly: LevelOfParallelism(3)]
 
@@ -19,157 +19,142 @@ namespace AutomationExerciseUI.Tests;
 [AllureFeature("UI Tests")]
 public class AutomationExerciseUITests : TestBase
 {
-    private readonly HomePage homePage;
-    private readonly SignupAndLoginPage signupAndLoginPage;
-    private readonly SignupPage signupPage;
-    private readonly ContactUsPage contactUsPage;
-    private readonly DataGeneratorService generatorService;
-    private readonly IUserSteps userSteps;
-
-    public AutomationExerciseUITests()
-    {
-        homePage = container.GetRequiredService<HomePage>();
-        signupAndLoginPage = container.GetRequiredService<SignupAndLoginPage>();
-        signupPage = container.GetRequiredService<SignupPage>();
-        userSteps = container.GetRequiredKeyedService<IUserSteps>("API");
-        contactUsPage = container.GetRequiredService<ContactUsPage>();
-        generatorService = container.GetRequiredService<DataGeneratorService>();
-    }
+    private HomePage homePage => container.GetRequiredService<HomePage>();
+    private SignupAndLoginPage signupAndLoginPage => container.GetRequiredService<SignupAndLoginPage>();
+    private SignupPage signupPage => container.GetRequiredService<SignupPage>();
+    private ContactUsPage contactUsPage => container.GetRequiredService<ContactUsPage>();
+    private DataGeneratorService generatorService => container.GetRequiredService<DataGeneratorService>();
+    private IUserSteps userSteps => container.GetRequiredKeyedService<IUserSteps>("API");
 
     [Test, Property("TMSId", "Test Case 1"), Description("Register User")]
     [AllureName("Register User")]
-    [Retry(3)]
-    public void RegisterUser()
+    public async Task RegisterUser()
     {
         var user = generatorService.GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
 
-        homePage.Open();
-        homePage.IsPageOpened().Should().BeTrue();
-        homePage.Header.GoToSignupLoginMenu();
+        await homePage.Open();
+        homePage.IsPageOpened().Result.Should().BeTrue();
+        await homePage.Header.GoToSignupLoginMenu();
 
-        signupAndLoginPage.GetSignupFormTitle().Should().Be("New User Signup!");
-        signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
-        signupAndLoginPage.SubmitSignupForm();
+        signupAndLoginPage.GetSignupFormTitle().Result.Should().Be("New User Signup!");
+        await signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
+        await signupAndLoginPage.SubmitSignupForm();
 
-        signupPage.GetSignupFormTitle().Should().Be("ENTER ACCOUNT INFORMATION");
-        signupPage.FillAccountInfoForm(user.Account);
-        signupPage.FillAddressInfoForm(user.Address);
-        signupPage.SubmitSignupForm();
-        signupPage.GetAccountCreatedMessage().Should().Be("ACCOUNT CREATED!");
-        signupPage.ClickOnContinueBtn();
+        signupPage.GetSignupFormTitle().Result.Should().Be("Enter Account Information");
+        await signupPage.FillAccountInfoForm(user.Account);
+        await signupPage.FillAddressInfoForm(user.Address);
+        await signupPage.SubmitSignupForm();
+        signupPage.GetAccountCreatedMessage().Result.Should().Be("Account Created!");
+        await signupPage.ClickOnContinueBtn();
 
-        homePage.Header.GetAllHeadersText()
+        homePage.Header.GetAllHeadersText().Result
             .Any(x => x.Contains($"Logged in as {user.Account.Name}"))
             .Should().BeTrue();
 
-        homePage.Header.ClickOnDeleteAccountMenu();
-        signupPage.GetAccountDeletedMessage().Should().Be("ACCOUNT DELETED!");
-        signupPage.ClickOnContinueBtn();
+        await homePage.Header.ClickOnDeleteAccountMenu();
+        signupPage.GetAccountDeletedMessage().Result.Should().Be("Account Deleted!");
+        await signupPage.ClickOnContinueBtn();
     }
 
     [Test, Property("TMSId", "Test Case 2"), Description("Login User with correct email and password")]
     [AllureName("Login User with correct email and password")]
-    [Retry(2)]
-    public void LoginUserCorrectEmailAndPassword()
+    public async Task LoginUserCorrectEmailAndPassword()
     {
         var user = generatorService.GenerateRandomUser();
-        userSteps.RegisterUser(user);
+        await userSteps.RegisterUser(user);
 
-        homePage.Open();
-        homePage.IsPageOpened().Should().BeTrue();
-        homePage.Header.GoToSignupLoginMenu();
+        await homePage.Open();
+        homePage.IsPageOpened().Result.Should().BeTrue();
+        await homePage.Header.GoToSignupLoginMenu();
 
-        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
-        signupAndLoginPage.FillLoginForm(user.Account.Email, user.Account.Password);
-        signupAndLoginPage.SubmitLoginForm();
+        signupAndLoginPage.GetLoginFormTitle().Result.Should().Be("Login to your account");
+        await signupAndLoginPage.FillLoginForm(user.Account.Email, user.Account.Password);
+        await signupAndLoginPage.SubmitLoginForm();
 
-        homePage.Header.GetAllHeadersText()
+        homePage.Header.GetAllHeadersText().Result
             .Any(x => x.Contains($"Logged in as {user.Account.Name}"))
             .Should().BeTrue();
 
-        homePage.Header.ClickOnDeleteAccountMenu();
-        signupPage.GetAccountDeletedMessage().Should().Be("ACCOUNT DELETED!");
+        await homePage.Header.ClickOnDeleteAccountMenu();
+        signupPage.GetAccountDeletedMessage().Result.Should().Be("Account Deleted!");
     }
 
     [Test, Property("TMSId", "Test Case 3"), Description("Login User with incorrect email and password")]
     [AllureName("Login User with incorrect email and password")]
     [Retry(2)]
-    public void LoginUserIncorrectEmailAndPassword()
+    public async Task LoginUserIncorrectEmailAndPassword()
     {
-        homePage.Open();
-        homePage.IsPageOpened().Should().BeTrue();
-        homePage.Header.GoToSignupLoginMenu();
+        await homePage.Open();
+        homePage.IsPageOpened().Result.Should().BeTrue();
+        await homePage.Header.GoToSignupLoginMenu();
 
-        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
-        signupAndLoginPage.FillLoginForm("EmailNotExist@mail.com", "Password");
-        signupAndLoginPage.SubmitLoginForm();
+        signupAndLoginPage.GetLoginFormTitle().Result.Should().Be("Login to your account");
+        await signupAndLoginPage.FillLoginForm("EmailNotExist@mail.com", "Password");
+        await signupAndLoginPage.SubmitLoginForm();
 
-        signupAndLoginPage.GetLoginFormErrorMessage()
+        signupAndLoginPage.GetLoginFormErrorMessage().Result
             .Should().Be("Your email or password is incorrect!");
     }
 
     [Test, Property("TMSId", "Test Case 4"), Description("Logout User")]
     [AllureName("Logout User")]
-    [Retry(2)]
-    public void LogoutUser()
+    public async Task LogoutUser()
     {
         var user = generatorService.GenerateRandomUser();
-        userSteps.RegisterUser(user);
+        await userSteps.RegisterUser(user);
 
-        homePage.Open();
-        homePage.IsPageOpened().Should().BeTrue();
-        homePage.Header.GoToSignupLoginMenu();
+        await homePage.Open();
+        homePage.IsPageOpened().Result.Should().BeTrue();
+        await homePage.Header.GoToSignupLoginMenu();
 
-        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
-        signupAndLoginPage.FillLoginForm(user.Account.Email, user.Account.Password);
-        signupAndLoginPage.SubmitLoginForm();
+        signupAndLoginPage.GetLoginFormTitle().Result.Should().Be("Login to your account");
+        await signupAndLoginPage.FillLoginForm(user.Account.Email, user.Account.Password);
+        await signupAndLoginPage.SubmitLoginForm();
 
-        homePage.Header.GetAllHeadersText()
+        homePage.Header.GetAllHeadersText().Result
             .Any(x => x.Contains($"Logged in as {user.Account.Name}"))
             .Should().BeTrue();
 
-        homePage.Header.ClickOnLogoutMenu();
-        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
+        await homePage.Header.ClickOnLogoutMenu();
+        signupAndLoginPage.GetLoginFormTitle().Result.Should().Be("Login to your account");
     }
 
     [Test, Property("TMSId", "Test Case 5"), Description("Register User with existing email")]
     [AllureName("Register User with existing email")]
-    [Retry(2)]
-    public void RegisterUserWithExistingEmail()
+    public async Task RegisterUserWithExistingEmail()
     {
         var user = generatorService.GenerateRandomUser(newsletterInput: true, specialOffersInput: true);
-        userSteps.RegisterUser(user);
+        await userSteps.RegisterUser(user);
 
-        homePage.Open();
-        homePage.IsPageOpened().Should().BeTrue();
-        homePage.Header.GoToSignupLoginMenu();
+        await homePage.Open();
+        homePage.IsPageOpened().Result.Should().BeTrue();
+        await homePage.Header.GoToSignupLoginMenu();
 
-        signupAndLoginPage.GetSignupFormTitle().Should().Be("New User Signup!");
-        signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
-        signupAndLoginPage.SubmitSignupForm();
-        signupAndLoginPage.GetSignUpErrorMessage().Should().Be("Email Address already exist!");
+        signupAndLoginPage.GetSignupFormTitle().Result.Should().Be("New User Signup!");
+        await signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
+        await signupAndLoginPage.SubmitSignupForm();
+        signupAndLoginPage.GetSignUpErrorMessage().Result.Should().Be("Email Address already exist!");
     }
 
     [Test, Property("TMSId", "Test Case 6"), Description("Contact Us Form")]
     [AllureName("Contact Us Form")]
-    [Retry(3)]
-    public void ContactUsForm()
+    public async Task ContactUsForm()
     {
         var contactUsData = generatorService.GenerateContactUsInfo();
 
-        homePage.Open();
-        homePage.IsPageOpened().Should().BeTrue();
+        await homePage.Open();
+        homePage.IsPageOpened().Result.Should().BeTrue();
 
-        homePage.Header.GoToContactUsMenu();
-        contactUsPage.GetContactUsFormTitle().Should().Be("GET IN TOUCH");
+        await homePage.Header.GoToContactUsMenu();
+        contactUsPage.GetContactUsFormTitle().Result.Should().Be("Get In Touch");
 
-        contactUsPage.FillContactUsForm(contactUsData);
-        contactUsPage.UploadFile("ContactUsData.jpg");
-        contactUsPage.Submit();
-        contactUsPage.GetSuccessfulMessage()
+        await contactUsPage.FillContactUsForm(contactUsData);
+        await contactUsPage.UploadFile("ContactUsData.jpg");
+        await contactUsPage.Submit();
+        contactUsPage.GetSuccessfulMessage().Result
             .Should().Be("Success! Your details have been submitted successfully.");
 
-        contactUsPage.Header.GoToHomeMenu();
-        homePage.IsPageOpened().Should().BeTrue();
+        await contactUsPage.Header.GoToHomeMenu();
+        homePage.IsPageOpened().Result.Should().BeTrue();
     }
 }

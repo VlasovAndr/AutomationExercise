@@ -1,5 +1,6 @@
 ﻿using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Core.Configuration;
+using Microsoft.Playwright;
 using NUnit.Allure.Attributes;
 
 namespace AutomationFramework.Core.Pages;
@@ -13,16 +14,16 @@ public class HomePage : PageBase
     private const string pageName = "Home Page";
     private readonly Header header;
 
-    public HomePage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, Header header, ITestReporter reporter)
-        : base(browser, log, config, reporter)
+    public HomePage(IPage page, TestRunConfiguration config, Header header, ITestReporter reporter)
+        : base(page, config, reporter)
     {
         this.header = header;
     }
 
     [AllureStep($"|{pageName}| Getting page status")]
-    public bool IsPageOpened()
+    public async Task<bool> IsPageOpened()
     {
-        var isPageOpened = header.IsHeaderBlockVisible() && browser.WebDriver.Title.Equals("Automation Exercise");
+        var isPageOpened = await header.IsHeaderBlockVisible() && Page.TitleAsync().Result.Equals("Automation Exercise");
         LogParameterInfo("isPageOpened", isPageOpened.ToString());
 
         return isPageOpened;

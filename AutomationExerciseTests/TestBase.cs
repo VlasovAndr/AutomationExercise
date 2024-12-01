@@ -6,64 +6,71 @@ using NUnit.Allure.Attributes;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System.Text;
+using Microsoft.Playwright;
+using Microsoft.Playwright.NUnit;
 
 namespace AutomationExerciseUI.Tests;
 
-public class TestBase
+public class TestBase : PageTest
 {
-    public readonly IServiceProvider container;
-    public readonly ILogging log;
-    private readonly CleanupTestService cleanupService;
-    private readonly ITestReporter reporter;
+    protected IServiceProvider container;
+    private ILogging _log;
+    private CleanupTestService _cleanupService;
+    private CleanupPlaywrightTestService _cleanupPlaywrightService;
+    private ITestReporter _reporter;
 
-    public TestBase()
+    [SetUp]
+    public void SetUp()
     {
-        container = DIContainer.ConfigureServices();
-        log = container.GetRequiredService<ILogging>();
-        cleanupService = container.GetRequiredService<CleanupTestService>();
-        reporter = container.GetRequiredService<ITestReporter>();
+        container = new DIContainer()
+            .RegisterPlaywrightService(Page)
+            .RegisterPlaywrightAPIService(CreateAPIRequestContext())
+            .Build();
+
+        _log = container.GetRequiredService<ILogging>();
+        _cleanupService = container.GetRequiredService<CleanupTestService>();
+        _cleanupPlaywrightService = container.GetRequiredService<CleanupPlaywrightTestService>();
+        _reporter = container.GetRequiredService<ITestReporter>();
+    }
+
+    private IAPIRequestContext CreateAPIRequestContext()
+    {
+        IAPIRequestContext request = Playwright.APIRequest.NewContextAsync(new()
+        {
+            BaseURL = "https://automationexercise.com/api/"
+        }).Result;
+
+        return request;
     }
 
     [TearDown]
     [AllureAfter("Teardown")]
-    public void AfterEach()
+    public async Task AfterEach()
     {
         var outcome = TestContext.CurrentContext.Result.Outcome.Status;
-        var webDriver = container.GetRequiredService<IWebDriverWrapper>();
+        var webDriver = container.GetRequiredService<IPage>();
 
         if (outcome == TestStatus.Passed)
         {
-            log.Information("Outcome: Passed");
+            _log.Information("Outcome: Passed");
         }
         else if (outcome == TestStatus.Failed)
         {
-            log.Error($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
-            var screenshot = webDriver.GetScreenshot();
-            var browserLogs = webDriver.GetBrowserLogs();
-            var pageSource = webDriver.WebDriver.PageSource;
-            reporter.AddAttachment("errorScreenshot.png", "image/png", screenshot);
-            reporter.AddAttachment("browserLogs.txt", "text/plain", Encoding.ASCII.GetBytes(browserLogs));
-            reporter.AddAttachment("pageSource.html", "text/html", Encoding.ASCII.GetBytes(pageSource));
+            _log.Error($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
+            var screenshot = await webDriver.ScreenshotAsync();
+            var pageSource = await webDriver.ContentAsync();
+            _reporter.AddAttachment("errorScreenshot.png", "image/png", screenshot);
+            _reporter.AddAttachment("pageSource.html", "text/html", Encoding.ASCII.GetBytes(pageSource));
         }
         else
         {
-            log.Warning("Outcome: " + outcome);
+            _log.Warning("Outcome: " + outcome);
         }
 
-        log.Information("--------------------------------------");
-        log.Information("Starting teardown");
-        log.Information("--------------------------------------");
-
-        try
-        {
-            if (webDriver.IsWebDriverCreated)
-                webDriver.CloseDriver();
-        }
-        catch (Exception ex)
-        {
-            log.Error($"Failed on closing web driver on after test run event. {ex.Message}");
-        }
-
-        cleanupService.Cleanup();
+        _log.Information("--------------------------------------");
+        _log.Information("Starting teardown");
+        _log.Information("--------------------------------------");
+        _cleanupService.Cleanup();
+        await _cleanupPlaywrightService.CleanupAsync();
     }
 }

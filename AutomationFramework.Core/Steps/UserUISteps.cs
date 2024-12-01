@@ -1,41 +1,40 @@
 ﻿using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Common.Models;
 using AutomationFramework.Core.Pages;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AutomationFramework.Core.Steps;
 
 public class UserUISteps : IUserSteps
 {
-    private IServiceProvider container;
-    private readonly SignupAndLoginPage signupAndLoginPage;
-    private readonly SignupPage signupPage;
+    private readonly SignupAndLoginPage _signupAndLoginPage;
+    private readonly SignupPage _signupPage;
+    private HomePage _homePage;
 
-    public UserUISteps(IServiceProvider container)
+    public UserUISteps(SignupAndLoginPage signupAndLoginPage, SignupPage signupPage, HomePage homePage)
     {
-        this.container = container;
-        signupAndLoginPage = this.container.GetRequiredService<SignupAndLoginPage>();
-        signupPage = this.container.GetRequiredService<SignupPage>();
+        _signupAndLoginPage = signupAndLoginPage;
+        _signupPage = signupPage;
+        _homePage = homePage;
     }
 
-    public void RegisterUser(User user)
+    public async Task RegisterUser(User user)
     {
-        signupAndLoginPage.Open();
-        signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
-        signupAndLoginPage.SubmitSignupForm();
+        await _signupAndLoginPage.Open();
+        await _signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
+        await _signupAndLoginPage.SubmitSignupForm();
 
-        signupPage.FillAccountInfoForm(user.Account);
-        signupPage.FillAddressInfoForm(user.Address);
-        signupPage.SubmitSignupForm();
-        signupPage.ClickOnContinueBtn();
-        signupPage.Close();
+        await _signupPage.FillAccountInfoForm(user.Account);
+        await _signupPage.FillAddressInfoForm(user.Address);
+        await _signupPage.SubmitSignupForm();
+        await _signupPage.ClickOnContinueBtn();
+        await _signupPage.ClearPage();
     }
 
-    public void DeleteUser(string email, string password)
+    public async Task DeleteUser(string email, string password)
     {
-        signupAndLoginPage.Open();
-        signupAndLoginPage.FillLoginForm(email, password);
-        signupAndLoginPage.SubmitLoginForm();
-        signupAndLoginPage.Close();
+        await _signupAndLoginPage.Open();
+        await _signupAndLoginPage.FillLoginForm(email, password);
+        await _signupAndLoginPage.SubmitLoginForm();
+        await _homePage.Header.ClickOnDeleteAccountMenu();
     }
 }

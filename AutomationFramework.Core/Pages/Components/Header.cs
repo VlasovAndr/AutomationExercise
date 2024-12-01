@@ -1,6 +1,7 @@
 ﻿using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Core.Pages.Components;
 using AutomationFramework.Core.Pages.Locators;
+using Microsoft.Playwright;
 using NUnit.Allure.Attributes;
 
 namespace AutomationFramework.Core.Pages;
@@ -8,43 +9,43 @@ namespace AutomationFramework.Core.Pages;
 public class Header : ComponentBase
 {
     private readonly HeaderLocators repo;
-    private readonly IWebDriverWrapper browser;
     private const string componentName = "Header";
 
     protected override string ComponentName => componentName;
 
-    public Header(IWebDriverWrapper browser, ILogging log, HeaderLocators repo, ITestReporter reporter)
-        : base(log, reporter)
+    public Header(IPage page, HeaderLocators repo, ITestReporter reporter)
+        : base(page, reporter)
     {
         this.repo = repo;
-        this.browser = browser;
     }
 
     [AllureStep($"|{componentName}| Getting header block visibility status")]
-    public bool IsHeaderBlockVisible()
+    public async Task<bool> IsHeaderBlockVisible()
     {
-        var isHeaderBlockVisible = browser.IsElementVisibleOnPage(repo.HeaderElement);
+        var isHeaderBlockVisible = await Page.Locator(repo.HeaderElement).IsVisibleAsync();
         LogParameterInfo("isHeaderBlockVisible", isHeaderBlockVisible.ToString());
         return isHeaderBlockVisible;
     }
 
-    public void GoToHomeMenu() => GoToMenu("Home");
-    public void GoToProductsMenu() => GoToMenu("Products");
-    public void GoToCartMenu() => GoToMenu("Cart");
-    public void GoToSignupLoginMenu() => GoToMenu("Signup / Login");
-    public void GoToTestCasesMenu() => GoToMenu("Test Cases");
-    public void GoToAPITestingMenu() => GoToMenu("API Testing");
-    public void GoToVideoTutorialsMenu() => GoToMenu("Video Tutorials");
-    public void GoToContactUsMenu() => GoToMenu("Contact us");
-    public void ClickOnDeleteAccountMenu() => GoToMenu("Delete Account");
-    public void ClickOnLogoutMenu() => GoToMenu("Logout");
+    public async Task GoToHomeMenu() => await GoToMenu("Home");
+    public async Task GoToProductsMenu() => await GoToMenu("Products");
+    public async Task GoToCartMenu() => await GoToMenu("Cart");
+    public async Task GoToSignupLoginMenu() => await GoToMenu("Signup / Login");
+    public async Task GoToTestCasesMenu() => await GoToMenu("Test Cases");
+    public async Task GoToAPITestingMenu() => await GoToMenu("API Testing");
+    public async Task GoToVideoTutorialsMenu() => await GoToMenu("Video Tutorials");
+    public async Task GoToContactUsMenu() => await GoToMenu("Contact us");
+    public async Task ClickOnDeleteAccountMenu() => await GoToMenu("Delete Account");
+    public async Task ClickOnLogoutMenu() => await GoToMenu("Logout");
 
-    public List<string> GetAllHeadersText() => browser.FindElements(repo.HeaderMenuByName(""))
-        .Select(x => x.GetAttribute("innerText")).ToList();
+    public async Task<IReadOnlyList<string>> GetAllHeadersText()
+    {
+        return await Page.Locator(repo.HeaderMenuByName("")).AllInnerTextsAsync();
+    } 
 
     [AllureStep($"|{componentName}| Go to {{menuName}} menu")]
-    private void GoToMenu(string menuName)
+    private async Task GoToMenu(string menuName)
     {
-        browser.FindElement(repo.HeaderMenuByName(menuName)).Click();
+        await Page.Locator(repo.HeaderMenuByName(menuName)).ClickAsync();
     }
 }

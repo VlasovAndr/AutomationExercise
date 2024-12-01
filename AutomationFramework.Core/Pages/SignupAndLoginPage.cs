@@ -1,6 +1,7 @@
 ﻿using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Core.Configuration;
 using AutomationFramework.Core.Pages.Locators;
+using Microsoft.Playwright;
 using NUnit.Allure.Attributes;
 
 namespace AutomationFramework.Core.Pages;
@@ -16,70 +17,76 @@ public class SignupAndLoginPage : PageBase
     private readonly SignupAndLoginLocators repo;
     private const string pageName = "Signup / Login Page";
 
-    public SignupAndLoginPage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, Header header, SignupAndLoginLocators repo, ITestReporter reporter)
-        : base(browser, log, config, reporter)
+    public SignupAndLoginPage(IPage page, ILogging log, TestRunConfiguration config, Header header, SignupAndLoginLocators repo, ITestReporter reporter)
+        : base(page, config, reporter)
     {
         this.header = header;
         this.repo = repo;
     }
 
     [AllureStep($"|{pageName}| Getting signup form title")]
-    public string GetSignupFormTitle()
+    public async Task<string> GetSignupFormTitle()
     {
-        string formTitle = browser.FindElement(repo.SignupFormTitle).Text;
+        var formTitle = await Page.Locator(repo.SignupFormTitle).TextContentAsync();
+
         LogParameterInfo("Signup form title", formTitle);
 
         return formTitle;
     }
 
     [AllureStep($"|{pageName}| Filling signup form")]
-    public void FillSignupForm(string name, string email)
+    public async Task FillSignupForm(string name, string email)
     {
-        browser.EnterText(repo.SignupNameField, name);
-        browser.EnterText(repo.SignupEmailField, email);
+        await Page.Locator(repo.SignupNameField).FillAsync(name);
+        await Page.Locator(repo.SignupEmailField).FillAsync(email);
     }
 
     [AllureStep($"|{pageName}| Submiting signup form")]
-    public void SubmitSignupForm()
+    public async Task SubmitSignupForm()
     {
-        browser.FindElement(repo.SignupBtn).Click();
+        await Page.Locator(repo.SignupBtn).ClickAsync();
+
     }
 
     [AllureStep($"|{pageName}| Getting error message")]
-    public string GetSignUpErrorMessage()
+    public async Task<string> GetSignUpErrorMessage()
     {
-        var errorMessage = browser.FindElement(repo.SignUpErrorMessage).Text;
+        var errorMessage = await Page.Locator(repo.SignUpErrorMessage).TextContentAsync();
+
         LogParameterInfo("Error message", errorMessage);
 
         return errorMessage;
     }
 
     [AllureStep($"|{pageName}| Getting login form title")]
-    public string GetLoginFormTitle()
+    public async Task<string> GetLoginFormTitle()
     {
-        string formTitle = browser.FindElement(repo.LoginFormTitle).Text;
+        var formTitle = await Page.Locator(repo.LoginFormTitle).TextContentAsync();
+
         LogParameterInfo("Login form title", formTitle);
 
         return formTitle;
     }
 
     [AllureStep($"|{pageName}| Filling login form")]
-    public void FillLoginForm(string email, string password)
+    public async Task FillLoginForm(string email, string password)
     {
-        browser.EnterText(repo.LoginEmailField, email);
-        browser.EnterText(repo.LoginPasswordField, password);
+        await Page.Locator(repo.LoginEmailField).FillAsync(email);
+        await Page.Locator(repo.LoginPasswordField).FillAsync(password);
         LogParameterInfo("email", email);
     }
+
     [AllureStep($"|{pageName}| Submiting login form")]
-    public void SubmitLoginForm()
+    public async Task SubmitLoginForm()
     {
-        browser.FindElement(repo.LoginBtn).Click();
+        await Page.Locator(repo.LoginBtn).ClickAsync();
     }
 
     [AllureStep($"|{pageName}| Getting login form error message")]
-    public string GetLoginFormErrorMessage()
+    public async Task<string> GetLoginFormErrorMessage()
     {
-        var message = browser.FindElement(repo.LoginFormErrorMessage).Text;
+        var message = await Page.Locator(repo.LoginFormErrorMessage).TextContentAsync();
+
         LogParameterInfo("Login form error message", message);
 
         return message;

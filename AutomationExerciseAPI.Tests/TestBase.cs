@@ -2,22 +2,38 @@
 using AutomationFramework.Common.Services;
 using AutomationFramework.Core.Dependencies;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Playwright;
+using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 
 namespace AutomationExerciseAPI.Tests;
 
-public class TestBase
+public class TestBase : PlaywrightTest
 {
-    public readonly IServiceProvider container;
-    public readonly ILogging log;
-    private readonly CleanupTestService cleanupService;
+    protected IServiceProvider container;
+    private ILogging _log;
+    private CleanupPlaywrightTestService _cleanupService;
 
-    public TestBase()
+    [SetUp]
+    public void SetUp()
     {
-        container = DIContainer.ConfigureServices();
-        log = container.GetRequiredService<ILogging>();
-        cleanupService = container.GetRequiredService<CleanupTestService>();
+        container = new DIContainer()
+            .RegisterPlaywrightAPIService(CreateAPIRequestContext())
+            .Build();
+
+        _log = container.GetRequiredService<ILogging>();
+        _cleanupService = container.GetRequiredService<CleanupPlaywrightTestService>();
+    }
+
+    private IAPIRequestContext CreateAPIRequestContext()
+    {
+        IAPIRequestContext request = Playwright.APIRequest.NewContextAsync(new()
+        {
+            BaseURL = "https://automationexercise.com/api/",
+        }).Result;
+
+        return request;
     }
 
     [TearDown]
@@ -27,21 +43,21 @@ public class TestBase
 
         if (outcome == TestStatus.Passed)
         {
-            log.Information("Outcome: Passed");
+            _log.Information("Outcome: Passed");
         }
         else if (outcome == TestStatus.Failed)
         {
-            log.Error($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
+            _log.Error($"Test failed for reason: {TestContext.CurrentContext.Result.Message}");
         }
         else
         {
-            log.Warning("Outcome: " + outcome);
+            _log.Warning("Outcome: " + outcome);
         }
 
-        log.Information("--------------------------------------");
-        log.Information("Starting tearsown");
-        log.Information("--------------------------------------");
+        _log.Information("--------------------------------------");
+        _log.Information("Starting tearsown");
+        _log.Information("--------------------------------------");
 
-        cleanupService.Cleanup();
+        _cleanupService.CleanupAsync().Wait();
     }
 }

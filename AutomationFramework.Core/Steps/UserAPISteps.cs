@@ -1,27 +1,30 @@
 ﻿using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Common.Models;
+using AutomationFramework.Common.Services;
 using AutomationFramework.Common.Services.API;
 
 namespace AutomationFramework.Core.Steps;
 
 public class UserAPISteps : IUserSteps
 {
-    private readonly UserAPIService userAPIService;
-    private readonly ILogging log;
+    private readonly UserAPIPlaywrightService _userAPIService;
+    private readonly ILogging _log;
+    private readonly CleanupPlaywrightTestService _cleanup;
 
-    public UserAPISteps(UserAPIService userAPIService, ILogging log)
+    public UserAPISteps(UserAPIPlaywrightService userAPIService, ILogging log, CleanupPlaywrightTestService cleanup)
     {
-        this.userAPIService = userAPIService;
-        this.log = log;
+        _userAPIService = userAPIService;
+        _log = log;
+        _cleanup = cleanup;
     }
 
-    public void RegisterUser(User user)
+    public async Task RegisterUser(User user)
     {
-        userAPIService.RegisterUserAccount(user);
+        await _userAPIService.RegisterUserAccount(user);
     }
 
-    public void DeleteUser(string email, string password)
+    public async Task DeleteUser(string email, string password)
     {
-        userAPIService.DeleteUserAccount(email, password);
+        await _userAPIService.DeleteUserAccount(email, password);
     }
 }

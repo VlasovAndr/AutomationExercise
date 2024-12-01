@@ -1,5 +1,4 @@
 ﻿using AutomationFramework.Common.Abstractions;
-using AutomationFramework.Common.Models;
 using AutomationFramework.Common.Services.API.Responses;
 
 namespace AutomationFramework.Common.Services.API;

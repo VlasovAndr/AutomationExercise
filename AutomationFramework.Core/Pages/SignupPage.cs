@@ -2,6 +2,7 @@
 using AutomationFramework.Common.Models;
 using AutomationFramework.Core.Configuration;
 using AutomationFramework.Core.Pages.Locators;
+using Microsoft.Playwright;
 using NUnit.Allure.Attributes;
 
 namespace AutomationFramework.Core.Pages;
@@ -17,93 +18,98 @@ public class SignupPage : PageBase
     private readonly Header header;
     private readonly SignupLocators repo;
 
-    public SignupPage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, Header header, SignupLocators repo, ITestReporter reporter) 
-        : base(browser, log, config, reporter)
+    public SignupPage(IPage page, TestRunConfiguration config, Header header, SignupLocators repo, ITestReporter reporter)
+        : base(page, config, reporter)
     {
         this.header = header;
         this.repo = repo;
     }
 
     [AllureStep($"|{pageName}| Getting signup form title")]
-    public string GetSignupFormTitle()
+    public async Task<string> GetSignupFormTitle()
     {
-        string formTitle = browser.FindElement(repo.SignupFormTitle).Text;
+        var formTitle = await Page.Locator(repo.SignupFormTitle).TextContentAsync();
+
         LogParameterInfo("Signup form title", formTitle);
 
         return formTitle;
     }
 
-    public void FillSignupForm(AccountInfo accountInfo, AddressInfo addressInfo)
+    public async Task FillSignupForm(AccountInfo accountInfo, AddressInfo addressInfo)
     {
         FillAccountInfoForm(accountInfo);
         FillAddressInfoForm(addressInfo);
     }
 
     [AllureStep($"|{pageName}| Filling account info form")]
-    public void FillAccountInfoForm(AccountInfo accountInfo)
+    public async Task FillAccountInfoForm(AccountInfo accountInfo)
     {
-        browser.FindElement(repo.GenderRadioBtn(accountInfo.Gender)).Click();
-        browser.EnterText(repo.SignupNameField, accountInfo.Name);
-        browser.EnterText(repo.SignupPasswordField, accountInfo.Password);
-        browser.SelectFromDropDownByValue(repo.DayOfBirthDropDown, accountInfo.DateOfBirth.Day.ToString());
-        browser.SelectFromDropDownByValue(repo.MonthOfBirthDropDown, accountInfo.DateOfBirth.Month.ToString());
-        browser.SelectFromDropDownByValue(repo.YearOfBirthDropDown, accountInfo.DateOfBirth.Year.ToString());
+        await Page.Locator(repo.GenderRadioBtn(accountInfo.Gender)).ClickAsync();
+        await Page.Locator(repo.SignupNameField).FillAsync(accountInfo.Name);
+        await Page.Locator(repo.SignupPasswordField).FillAsync(accountInfo.Password);
 
-        var newsletterCheckBox = browser.FindElement(repo.NewsletterCheckBox);
-        if (newsletterCheckBox.Selected != accountInfo.IsNewsletter)
+        await Page.Locator(repo.DayOfBirthDropDown).SelectOptionAsync(accountInfo.DateOfBirth.Day.ToString());
+        await Page.Locator(repo.MonthOfBirthDropDown).SelectOptionAsync(accountInfo.DateOfBirth.Month.ToString());
+        await Page.Locator(repo.YearOfBirthDropDown).SelectOptionAsync(accountInfo.DateOfBirth.Year.ToString());
+
+        var newsletterCheckBox = Page.Locator(repo.NewsletterCheckBox);
+        if (await newsletterCheckBox.IsCheckedAsync() != accountInfo.IsNewsletter)
         {
-            newsletterCheckBox.Click();
+            await newsletterCheckBox.ClickAsync();
         }
 
-        var specOfferCheckBox = browser.FindElement(repo.SpecOfferCheckBox);
-        if (specOfferCheckBox.Selected != accountInfo.IsSpecialOffers)
+        var specOfferCheckBox = Page.Locator(repo.SpecOfferCheckBox);
+        if (await specOfferCheckBox.IsCheckedAsync() != accountInfo.IsSpecialOffers)
         {
-            specOfferCheckBox.Click();
+            await specOfferCheckBox.ClickAsync();
         }
     }
 
     [AllureStep($"|{pageName}| Filling address info form")]
-    public void FillAddressInfoForm(AddressInfo addressInfo)
+    public async Task FillAddressInfoForm(AddressInfo addressInfo)
     {
-        browser.EnterText(repo.FirstNameField, addressInfo.FirstName);
-        browser.EnterText(repo.LastNameField, addressInfo.LastName);
-        browser.EnterText(repo.CompanyField, addressInfo.Company);
-        browser.EnterText(repo.AddressField, addressInfo.Address);
-        browser.EnterText(repo.Address2Field, addressInfo.Address2);
+        await Page.Locator(repo.FirstNameField).FillAsync(addressInfo.FirstName);
+        await Page.Locator(repo.LastNameField).FillAsync(addressInfo.LastName);
+        await Page.Locator(repo.CompanyField).FillAsync(addressInfo.Company);
+        await Page.Locator(repo.AddressField).FillAsync(addressInfo.Address);
+        await Page.Locator(repo.Address2Field).FillAsync(addressInfo.Address2);
 
-        browser.SelectFromDropDownByValue(repo.CountyDropDown, addressInfo.Country);
+        await Page.Locator(repo.CountyDropDown).SelectOptionAsync(addressInfo.Country);
 
-        browser.EnterText(repo.StateField, addressInfo.State);
-        browser.EnterText(repo.CityField, addressInfo.City);
-        browser.EnterText(repo.ZipcodeField, addressInfo.Zipcode.ToString());
-        browser.EnterText(repo.MobileNumberField, addressInfo.MobileNumber.ToString());
+        await Page.Locator(repo.StateField).FillAsync(addressInfo.State);
+        await Page.Locator(repo.CityField).FillAsync(addressInfo.City);
+        await Page.Locator(repo.ZipcodeField).FillAsync(addressInfo.Zipcode.ToString());
+        await Page.Locator(repo.MobileNumberField).FillAsync(addressInfo.MobileNumber.ToString());
     }
 
     [AllureStep($"|{pageName}| Submiting signup form")]
-    public void SubmitSignupForm()
+    public async Task SubmitSignupForm()
     {
-        browser.FindElement(repo.CreateAccountBtn).Click();
+        await Page.Locator(repo.CreateAccountBtn).ClickAsync();
+
     }
 
     [AllureStep($"|{pageName}| Clicking on continue button")]
-    public void ClickOnContinueBtn()
+    public async Task ClickOnContinueBtn()
     {
-        browser.FindElement(repo.ContinueBtn).Click();
+        await Page.Locator(repo.ContinueBtn).ClickAsync();
     }
 
     [AllureStep($"|{pageName}| Getting created message")]
-    public string GetAccountCreatedMessage()
+    public async Task<string> GetAccountCreatedMessage()
     {
-        string createAccountMessage = browser.FindElement(repo.CreateAccountMessage).Text;
+        var createAccountMessage = await Page.Locator(repo.CreateAccountMessage).TextContentAsync();
+
         LogParameterInfo("Account created message", createAccountMessage);
 
         return createAccountMessage;
     }
 
     [AllureStep($"|{pageName}| Getting deleted message")]
-    public string GetAccountDeletedMessage()
+    public async Task<string> GetAccountDeletedMessage()
     {
-        string deleteAccountMessage = browser.FindElement(repo.DeleteAccountMessage).Text;
+        var deleteAccountMessage = await Page.Locator(repo.DeleteAccountMessage).TextContentAsync();
+
         LogParameterInfo("Account deleted message", deleteAccountMessage);
 
         return deleteAccountMessage;
