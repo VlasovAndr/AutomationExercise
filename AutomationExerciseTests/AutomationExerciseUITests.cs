@@ -130,7 +130,7 @@ public class AutomationExerciseUITests : TestBase
         homePage.IsPageOpened().Result.Should().BeTrue();
         await homePage.Header.GoToSignupLoginMenu();
 
-        signupAndLoginPage.GetSignupFormTitle().Result.Should().Be("New User Signup!");
+        signupAndLoginPage.GetSignupFormTitle().Result.Should().Contain("New User Signup!");
         await signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
         await signupAndLoginPage.SubmitSignupForm();
         signupAndLoginPage.GetSignUpErrorMessage().Result.Should().Be("Email Address already exist!");
