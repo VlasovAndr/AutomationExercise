@@ -1,6 +1,7 @@
 ﻿using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Common.Models;
-using AutomationFramework.Core.Pages;
+using AutomationFramework.Core.Pages.SignupAndLoginPage;
+using AutomationFramework.Core.Pages.SignupPage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AutomationFramework.Core.Steps;
@@ -21,8 +22,8 @@ public class UserUISteps : IUserSteps
     public void RegisterUser(User user)
     {
         signupAndLoginPage.Open();
-        signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
-        signupAndLoginPage.SubmitSignupForm();
+        signupAndLoginPage.SignupForm.Fill(user.Account.Name, user.Account.Email);
+        signupAndLoginPage.SignupForm.Submit();
 
         signupPage.FillAccountInfoForm(user.Account);
         signupPage.FillAddressInfoForm(user.Address);
@@ -34,8 +35,8 @@ public class UserUISteps : IUserSteps
     public void DeleteUser(string email, string password)
     {
         signupAndLoginPage.Open();
-        signupAndLoginPage.FillLoginForm(email, password);
-        signupAndLoginPage.SubmitLoginForm();
+        signupAndLoginPage.LoginForm.Fill(email, password);
+        signupAndLoginPage.LoginForm.Submit();
         signupAndLoginPage.Close();
     }
 }

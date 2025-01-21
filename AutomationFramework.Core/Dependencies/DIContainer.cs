@@ -5,11 +5,14 @@ using AutomationFramework.Core.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using AutomationFramework.Core.Selenium.WebDriverFactory;
 using AutomationFramework.Core.Selenium;
-using AutomationFramework.Core.Pages;
-using AutomationFramework.Core.Pages.Locators;
 using AutomationFramework.Core.Steps;
 using AutomationFramework.Common.Services.API;
 using AutomationFramework.Common.Services;
+using AutomationFramework.Core.Pages.ContactUsPage;
+using AutomationFramework.Core.Pages.HomePage;
+using AutomationFramework.Core.Pages.SignupAndLoginPage;
+using AutomationFramework.Core.Pages.SignupPage;
+using AutomationFramework.Core.Pages.Common.Header;
 
 namespace AutomationFramework.Core.Dependencies;
 
@@ -36,10 +39,11 @@ public class DIContainer
             serviceCollection.AddSingleton<SignupAndLoginPage>();
             serviceCollection.AddSingleton<SignupPage>();
             serviceCollection.AddSingleton<Header>();
+            serviceCollection.AddSingleton<SignupForm>();
+            serviceCollection.AddSingleton<LoginForm>();
             serviceCollection.AddSingleton<ContactUsPage>();
 
             serviceCollection.AddSingleton<HeaderLocators>();
-            serviceCollection.AddSingleton<SignupAndLoginLocators>();
             serviceCollection.AddSingleton<SignupLocators>();
             serviceCollection.AddSingleton<ContactUsLocators>();
 

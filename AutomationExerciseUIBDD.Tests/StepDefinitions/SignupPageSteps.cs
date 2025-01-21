@@ -1,6 +1,6 @@
 using AutomationExerciseUIBDD.Tests.Dependencies;
 using AutomationFramework.Common.Models;
-using AutomationFramework.Core.Pages;
+using AutomationFramework.Core.Pages.SignupPage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AutomationExerciseUIBDD.Tests.StepDefinitions;

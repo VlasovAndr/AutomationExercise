@@ -1,5 +1,5 @@
 using AutomationExerciseUIBDD.Tests.Dependencies;
-using AutomationFramework.Core.Pages;
+using AutomationFramework.Core.Pages.Common.Header;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AutomationExerciseUIBDD.Tests.StepDefinitions;

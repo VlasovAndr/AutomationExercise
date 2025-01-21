@@ -2,20 +2,19 @@
 using AutomationFramework.Common.Models;
 using AutomationFramework.Common.Variables;
 using AutomationFramework.Core.Configuration;
-using AutomationFramework.Core.Pages.Locators;
+using AutomationFramework.Core.Pages.Common.Header;
 using NUnit.Allure.Attributes;
 using OpenQA.Selenium;
 
-namespace AutomationFramework.Core.Pages;
+namespace AutomationFramework.Core.Pages.ContactUsPage;
 
 public class ContactUsPage : PageBase
 {
-    public Header Header => header;
+    public Header Header { get; }
 
     protected override string PageName => pageName;
     protected override string PageUrl => $"{BaseUrl}/contact_us";
 
-    private readonly Header header;
     private readonly ContactUsLocators repo;
     private readonly DefaultVariables variables;
     private const string pageName = "ContactUsPage Page";
@@ -24,7 +23,7 @@ public class ContactUsPage : PageBase
         Header header, ContactUsLocators repo, DefaultVariables variables, ITestReporter reporter)
         : base(browser, log, config, reporter)
     {
-        this.header = header;
+        Header = header;
         this.repo = repo;
         this.variables = variables;
     }

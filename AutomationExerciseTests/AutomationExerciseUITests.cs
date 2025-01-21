@@ -1,5 +1,4 @@
-﻿using AutomationFramework.Core.Pages;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using FluentAssertions;
@@ -7,6 +6,10 @@ using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Common.Services;
 using NUnit.Allure.Attributes;
 using NUnit.Allure.Core;
+using AutomationFramework.Core.Pages.ContactUsPage;
+using AutomationFramework.Core.Pages.HomePage;
+using AutomationFramework.Core.Pages.SignupAndLoginPage;
+using AutomationFramework.Core.Pages.SignupPage;
 
 [assembly: LevelOfParallelism(3)]
 
@@ -47,9 +50,9 @@ public class AutomationExerciseUITests : TestBase
         homePage.IsPageOpened().Should().BeTrue();
         homePage.Header.GoToSignupLoginMenu();
 
-        signupAndLoginPage.GetSignupFormTitle().Should().Be("New User Signup!");
-        signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
-        signupAndLoginPage.SubmitSignupForm();
+        signupAndLoginPage.SignupForm.GetTitle().Should().Be("New User Signup!");
+        signupAndLoginPage.SignupForm.Fill(user.Account.Name, user.Account.Email);
+        signupAndLoginPage.SignupForm.Submit();
 
         signupPage.GetSignupFormTitle().Should().Be("ENTER ACCOUNT INFORMATION");
         signupPage.FillAccountInfoForm(user.Account);
@@ -79,9 +82,9 @@ public class AutomationExerciseUITests : TestBase
         homePage.IsPageOpened().Should().BeTrue();
         homePage.Header.GoToSignupLoginMenu();
 
-        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
-        signupAndLoginPage.FillLoginForm(user.Account.Email, user.Account.Password);
-        signupAndLoginPage.SubmitLoginForm();
+        signupAndLoginPage.LoginForm.GetTitle().Should().Be("Login to your account");
+        signupAndLoginPage.LoginForm.Fill(user.Account.Email, user.Account.Password);
+        signupAndLoginPage.LoginForm.Submit();
 
         homePage.Header.GetAllHeadersText()
             .Any(x => x.Contains($"Logged in as {user.Account.Name}"))
@@ -100,11 +103,11 @@ public class AutomationExerciseUITests : TestBase
         homePage.IsPageOpened().Should().BeTrue();
         homePage.Header.GoToSignupLoginMenu();
 
-        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
-        signupAndLoginPage.FillLoginForm("EmailNotExist@mail.com", "Password");
-        signupAndLoginPage.SubmitLoginForm();
+        signupAndLoginPage.LoginForm.GetTitle().Should().Be("Login to your account");
+        signupAndLoginPage.LoginForm.Fill("EmailNotExist@mail.com", "Password");
+        signupAndLoginPage.LoginForm.Submit();
 
-        signupAndLoginPage.GetLoginFormErrorMessage()
+        signupAndLoginPage.LoginForm.GetErrorMessage()
             .Should().Be("Your email or password is incorrect!");
     }
 
@@ -120,16 +123,16 @@ public class AutomationExerciseUITests : TestBase
         homePage.IsPageOpened().Should().BeTrue();
         homePage.Header.GoToSignupLoginMenu();
 
-        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
-        signupAndLoginPage.FillLoginForm(user.Account.Email, user.Account.Password);
-        signupAndLoginPage.SubmitLoginForm();
+        signupAndLoginPage.LoginForm.GetTitle().Should().Be("Login to your account");
+        signupAndLoginPage.LoginForm.Fill(user.Account.Email, user.Account.Password);
+        signupAndLoginPage.LoginForm.Submit();
 
         homePage.Header.GetAllHeadersText()
             .Any(x => x.Contains($"Logged in as {user.Account.Name}"))
             .Should().BeTrue();
 
         homePage.Header.ClickOnLogoutMenu();
-        signupAndLoginPage.GetLoginFormTitle().Should().Be("Login to your account");
+        signupAndLoginPage.LoginForm.GetTitle().Should().Be("Login to your account");
     }
 
     [Test, Property("TMSId", "Test Case 5"), Description("Register User with existing email")]
@@ -144,10 +147,10 @@ public class AutomationExerciseUITests : TestBase
         homePage.IsPageOpened().Should().BeTrue();
         homePage.Header.GoToSignupLoginMenu();
 
-        signupAndLoginPage.GetSignupFormTitle().Should().Be("New User Signup!");
-        signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
-        signupAndLoginPage.SubmitSignupForm();
-        signupAndLoginPage.GetSignUpErrorMessage().Should().Be("Email Address already exist!");
+        signupAndLoginPage.SignupForm.GetTitle().Should().Be("New User Signup!");
+        signupAndLoginPage.SignupForm.Fill(user.Account.Name, user.Account.Email);
+        signupAndLoginPage.SignupForm.Submit();
+        signupAndLoginPage.SignupForm.GetErrorMessage().Should().Be("Email Address already exist!");
     }
 
     [Test, Property("TMSId", "Test Case 6"), Description("Contact Us Form")]
