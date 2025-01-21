@@ -5,12 +5,12 @@ namespace AutomationFramework.Core.Pages.SignupAndLoginPage;
 
 public abstract class FormBase : ComponentBase
 {
-    public virtual string FormContainer { get; }
-    public virtual string Title { get; }
-    public virtual string EmailField { get; }
-    public virtual string PasswordField { get; }
-    public virtual string SubmitBtn { get; }
-    public virtual string ErrorMessage { get; }
+    protected virtual string FormContainer { get; }
+    protected virtual string Title { get; }
+    protected virtual string EmailField { get; }
+    protected virtual string PasswordField { get; }
+    protected virtual string SubmitBtn { get; }
+    protected virtual string ErrorMessage { get; }
 
     public FormBase(IWebDriverWrapper browser, ILogging log, ITestReporter reporter)
         : base(browser, log, reporter)

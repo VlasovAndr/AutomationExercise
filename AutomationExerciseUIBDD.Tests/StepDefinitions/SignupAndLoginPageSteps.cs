@@ -22,18 +22,18 @@ public class SignupAndLoginPageSteps
 	public void FillSignupFormForPreviouslyCreatedUser()
 	{
 		var user = (User)scenarioContext["user"];
-		signupAndLoginPage.FillSignupForm(user.Account.Name, user.Account.Email);
+		signupAndLoginPage.SignupForm.Fill(user.Account.Name, user.Account.Email);
 	}
 
 	[When(@"I submit Signup form on Signup and Login page")]
 	public void SubmitSignupForm()
 	{
-		signupAndLoginPage.SubmitSignupForm();
+		signupAndLoginPage.SignupForm.Submit();
 	}
 
 	[Then(@"I validate Signup form title is (.*) on Signup and Login page")]
 	public void ValidateSignupFormTitle(string title)
 	{
-		signupAndLoginPage.GetSignupFormTitle().Should().Be(title);
+		signupAndLoginPage.SignupForm.GetTitle().Should().Be(title);
 	}
 }

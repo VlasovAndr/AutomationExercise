@@ -11,10 +11,10 @@ public class SignupForm : FormBase
     {
     }
 
-    public override string FormContainer => $".//div[@class = 'signup-form']";
-    public override string Title => $"{FormContainer}/h2";
-    public override string EmailField => $"{FormContainer}//input[@data-qa = 'signup-name']";
-    public override string PasswordField => $"{FormContainer}//input[@data-qa = 'signup-email']";
-    public override string SubmitBtn => $".//button[@data-qa = 'signup-button']";
-    public override string ErrorMessage => $"{FormContainer}//p";
+    protected override string FormContainer => $".//div[@class = 'signup-form']";
+    protected override string Title => $"{FormContainer}/h2";
+    protected override string EmailField => $"{FormContainer}//input[@data-qa = 'signup-name']";
+    protected override string PasswordField => $"{FormContainer}//input[@data-qa = 'signup-email']";
+    protected override string SubmitBtn => $".//button[@data-qa = 'signup-button']";
+    protected override string ErrorMessage => $"{FormContainer}//p";
 }
