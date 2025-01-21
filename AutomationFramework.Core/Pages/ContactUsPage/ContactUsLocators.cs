@@ -1,4 +1,4 @@
-﻿namespace AutomationFramework.Core.Pages.Locators;
+﻿namespace AutomationFramework.Core.Pages.ContactUsPage;
 
 public class ContactUsLocators
 {

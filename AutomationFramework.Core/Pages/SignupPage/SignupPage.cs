@@ -1,10 +1,10 @@
 ﻿using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Common.Models;
 using AutomationFramework.Core.Configuration;
-using AutomationFramework.Core.Pages.Locators;
+using AutomationFramework.Core.Pages.Common.Header;
 using NUnit.Allure.Attributes;
 
-namespace AutomationFramework.Core.Pages;
+namespace AutomationFramework.Core.Pages.SignupPage;
 
 public class SignupPage : PageBase
 {
@@ -17,7 +17,7 @@ public class SignupPage : PageBase
     private readonly Header header;
     private readonly SignupLocators repo;
 
-    public SignupPage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, Header header, SignupLocators repo, ITestReporter reporter) 
+    public SignupPage(IWebDriverWrapper browser, ILogging log, TestRunConfiguration config, Header header, SignupLocators repo, ITestReporter reporter)
         : base(browser, log, config, reporter)
     {
         this.header = header;

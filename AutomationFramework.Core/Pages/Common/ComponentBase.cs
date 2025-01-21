@@ -6,11 +6,13 @@ namespace AutomationFramework.Core.Pages.Components
     {
         private ILogging log;
         private readonly ITestReporter reporter;
+        protected readonly IWebDriverWrapper browser;
 
         protected virtual string ComponentName { get; }
 
-        public ComponentBase(ILogging log, ITestReporter reporter)
+        public ComponentBase(IWebDriverWrapper browser, ILogging log, ITestReporter reporter)
         {
+            this.browser = browser;
             this.log = log;
             this.reporter = reporter;
         }
@@ -23,6 +25,11 @@ namespace AutomationFramework.Core.Pages.Components
         protected void LogParameterInfo(string paramName, string paramValues)
         {
             reporter.AddParameter(paramName, paramValues);
+        }
+
+        protected void CreateStep(string log, Action action)
+        {
+            reporter.CreateStep($"|{ComponentName}| {log}", action);
         }
     }
 }

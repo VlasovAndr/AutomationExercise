@@ -24,4 +24,13 @@ public class AllureReporter : ITestReporter
             );
         });
     }
+
+
+    public void CreateStep(string stepName, Action stepAction)
+    {
+        AllureApi.Step(stepName, () =>
+        {
+            stepAction();
+        });
+    }
 }

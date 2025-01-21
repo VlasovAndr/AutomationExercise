@@ -1,23 +1,20 @@
 ﻿using AutomationFramework.Common.Abstractions;
 using AutomationFramework.Core.Pages.Components;
-using AutomationFramework.Core.Pages.Locators;
 using NUnit.Allure.Attributes;
 
-namespace AutomationFramework.Core.Pages;
+namespace AutomationFramework.Core.Pages.Common.Header;
 
 public class Header : ComponentBase
 {
     private readonly HeaderLocators repo;
-    private readonly IWebDriverWrapper browser;
     private const string componentName = "Header";
 
     protected override string ComponentName => componentName;
 
     public Header(IWebDriverWrapper browser, ILogging log, HeaderLocators repo, ITestReporter reporter)
-        : base(log, reporter)
+        : base(browser, log, reporter)
     {
         this.repo = repo;
-        this.browser = browser;
     }
 
     [AllureStep($"|{componentName}| Getting header block visibility status")]
